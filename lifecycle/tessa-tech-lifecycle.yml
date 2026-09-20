@@ -1,0 +1,50 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://aiagent.tessa.tech/openapi.json (info.version), the agent card, server.json and the MCP initialize response
+  on aiagent.tessa.tech, https://complianceregistry.net/extensions/tessa-professional-services/v1/changelog, and a
+  search of tessa.tech for status, SLA, versioning and deprecation pages (2026-09-19).
+versioning:
+  scheme: unversioned-path
+  current:
+    openapi_info_version: 0.1.0
+    agent_card_version: 1.1.0
+    mcp_server_info_version: 1.30.0
+    mcp_server_json_version: 1.0.1
+    mcp_protocol_version: '2025-06-18'
+    a2a_protocol_version: '0.3.0'
+    extension_version: 1.0.0 (TESSA Professional Services, 2026-04-24)
+  notes: >-
+    No version segment in any REST path on aiagent.tessa.tech; the only versioned surface is the A2A extension
+    (/extensions/tessa-professional-services/v1/) and the taxonomy routes (/taxonomy/{name}/v{version}). The four
+    version numbers above disagree with each other (spec 0.1.0, card 1.1.0, MCP runtime 1.30.0, MCP manifest 1.0.1),
+    so none of them is a reliable release identifier for a consumer; the MCP serverInfo.version is the one that
+    changes with the running code.
+changelog:
+  url: https://complianceregistry.net/extensions/tessa-professional-services/v1/changelog
+  artifact: changelog/tessa-tech-changelog.yml
+  scope: The A2A extension only. No changelog is published for the REST API, the MCP tool set or the agent card.
+deprecation:
+  policy_documented: false
+  sunset_header: false
+  deprecated_operations: []
+  notes: >-
+    No deprecation or sunset policy located on tessa.tech or aiagent.tessa.tech; no operation in the 51-operation
+    spec is marked deprecated. No Deprecation pointer is emitted.
+sla:
+  url: null
+  uptime_target: null
+  notes: No SLA published. The pricing page prices services, not API availability.
+status_page:
+  url: null
+  notes: >-
+    No status page found (status.tessa.tech not probed as no link to one exists; no Status/uptime link on the site or
+    in the agent host's root document). The app exposes GET /healthz ({"status":"ok","db":true,"mcp_mounted":true,
+    "sitepilot_mounted":true}) — a liveness probe, not a status page. No StatusPage pointer is emitted.
+health_endpoint:
+  url: https://aiagent.tessa.tech/healthz
+  observed: '{"status":"ok","db":true,"mcp_mounted":true,"sitepilot_mounted":true}'
+  operationId: healthz_healthz_get
+support_period:
+  stated: null
+  notes: No support-lifetime statement for the agent surfaces.

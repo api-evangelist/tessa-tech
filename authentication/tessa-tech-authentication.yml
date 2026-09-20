@@ -1,0 +1,76 @@
+generated: '2026-09-19'
+method: searched
+docs: https://tessa.tech/.well-known/oauth-authorization-server
+source: >-
+  The provider's OpenAPI (openapi/tessa-tech-agent-directory-openapi.yml) declares NO securitySchemes and no
+  security requirements, so 0-working/derive-authentication.py correctly produced nothing. This profile is
+  assembled instead from live anonymous probes of every surface on 2026-09-19 and from the two OAuth discovery
+  documents TESSA publishes on its apex (well-known/tessa-tech-oauth-authorization-server.json,
+  well-known/tessa-tech-oauth-protected-resource.json).
+summary:
+  types: [none, oauth2, admin-token]
+  api_key_in: []
+  oauth2_flows: [authorizationCode]
+  note: >-
+    Three distinct postures on two hosts. (1) Everything on aiagent.tessa.tech that an agent uses — the agent card,
+    the A2A JSON-RPC endpoint, the MCP server (initialize + tools/list), the OpenAPI, the service-card fleet — is
+    ANONYMOUS: no credential was sent to any of them and none challenged. (2) A handful of operator routes on the
+    same host (/admin/*, /internal/*) answer 401 {"detail":"Invalid or missing admin token"} — a bearer/admin token
+    the OpenAPI does not describe. (3) The WordPress MCP server on tessa.tech is OAuth 2.1: RFC 8414 metadata names
+    the issuer, endpoints, PKCE S256, public clients only (token_endpoint_auth_methods_supported ["none"]), a single
+    scope "mcp", and client_id_metadata_document_supported true — the MCP-authorization client-registration
+    pattern in which the client_id is an https URL to a metadata document instead of a pre-registered id.
+schemes:
+  - name: anonymous
+    type: none
+    surfaces:
+      - https://aiagent.tessa.tech/.well-known/agent-card.json
+      - https://aiagent.tessa.tech/a2a (JSON-RPC; tasks/get answered with A2A -32001 for an unknown id)
+      - https://aiagent.tessa.tech/mcp/ (initialize 200, tools/list 200 with 10 tools; session via mcp-session-id header)
+      - https://aiagent.tessa.tech/openapi.json, /docs, /redoc, /healthz, /s, /s/{slug}/agent-card.json
+    evidence: No WWW-Authenticate on any response; no securitySchemes in the spec; no RFC 9728 document on aiagent.tessa.tech (404).
+    agent_note: >-
+      The four side-effecting MCP tools / A2A skills (request_strategy_session, request_introduction, claim_listing,
+      request_quote) are reachable with no credential. The only identity input is the prospect_email / claim_email
+      the caller supplies; TESSA verifies claims out-of-band by email within one business day per the tool text.
+  - name: admin-token
+    type: http
+    scheme: bearer
+    declared_in_spec: false
+    surfaces: [/admin/requests, /admin/first-hit, /internal/visibility, /internal/visibility.json]
+    evidence: 'HTTP 401 {"detail":"Invalid or missing admin token"} on GET /admin/requests and GET /internal/visibility.json (2026-09-19). Header name not disclosed.'
+  - name: wordpress-mcp-oauth
+    type: oauth2
+    resource: https://tessa.tech/wp-json/mcp/mcp-oauth-server
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://tessa.tech/oauth/authorize
+        tokenUrl: https://tessa.tech/oauth/token
+        refreshUrl: https://tessa.tech/oauth/token
+        revocationUrl: https://tessa.tech/oauth/revoke
+        pkce: S256
+        scopes:
+          mcp: Access the WordPress MCP server (the only scope the authorization server advertises; no description is published).
+    issuer: https://tessa.tech
+    response_types_supported: [code]
+    grant_types_supported: [authorization_code, refresh_token]
+    token_endpoint_auth_methods_supported: [none]
+    client_registration: OAuth Client ID Metadata Documents (client_id_metadata_document_supported true); no /register endpoint advertised (RFC 7591 dynamic registration not offered)
+    authorization_response_iss_parameter_supported: true
+    bearer_methods_supported: [header]
+    discovery:
+      authorization_server: well-known/tessa-tech-oauth-authorization-server.json
+      protected_resource: well-known/tessa-tech-oauth-protected-resource.json
+    evidence: >-
+      Anonymous POST tools/list to the resource returned 401 {"code":"mcp_unauthorized","message":"MCP authentication
+      required."} with no WWW-Authenticate header; both discovery documents fetched 200 on 2026-09-19.
+    sources: [well-known/tessa-tech-oauth-authorization-server.json, well-known/tessa-tech-oauth-protected-resource.json]
+  - name: wordpress-application-passwords
+    type: http
+    scheme: basic
+    surfaces: [https://tessa.tech/wp-json/ (core WordPress REST API, wp/v2 and plugin namespaces)]
+    evidence: 'The WP REST index advertises authentication.application-passwords with authorization endpoint https://tessa.tech/wp-admin/authorize-application.php. Recorded because it is published; the WordPress REST API is not one of the API entries in apis.yml.'
+see_also:
+  scopes: scopes/tessa-tech-scopes.yml
+  mcp: mcp/tessa-tech-mcp.yml
+  well_known: well-known/tessa-tech-well-known.yml

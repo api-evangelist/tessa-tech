@@ -1,0 +1,157 @@
+generated: '2026-09-19'
+method: probed
+source: https://aiagent.tessa.tech/.well-known/agent-card.json
+card:
+  file: a2a/tessa-tech-agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: aiagent.tessa.tech
+  note: >-
+    Served from TESSA's dedicated agent host. The apex (https://tessa.tech/.well-known/agent-card.json) and
+    www both 3xx to this URL, so one card is reachable from every host the record knows. The legacy
+    /.well-known/agent.json returns a real JSON 404 ({"detail":"Not Found"}, 22 bytes) on aiagent.tessa.tech
+    and a WordPress HTML 404 on the apex, and a negative-control path that cannot exist
+    (/.well-known/tessa-tech-negative-control-9c1e4b7a.json) 404s on both hosts, so the 200 is a served
+    document and not a catch-all. Ownership is not in question: provider.organization is "TESSA Marketing &
+    Technology" with provider.url https://tessa.tech, the OpenAPI on the same host titles itself "TESSA
+    Agent Directory", the host's root document names it "TESSA MCP Server + Agent Directory", and
+    https://aiagent.tessa.tech/.well-known/did.json (did:web:tessa.tech) lists this card as its
+    A2AAgentCard service endpoint.
+x-evidence:
+  fetched: '2026-09-19'
+  url: https://aiagent.tessa.tech/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+  body_bytes: 5661
+  cache_control: public, max-age=300
+  server: railway-hikari
+  body_parses_as: JSON object with AgentCard shape (protocolVersion, name, description, url, preferredTransport, additionalInterfaces, iconUrl, version, provider, documentationUrl, capabilities, defaultInputModes, defaultOutputModes, skills, _meta)
+  corroborating_probes:
+  - url: https://tessa.tech/.well-known/agent-card.json
+    http_status: 200
+    note: Redirects to https://aiagent.tessa.tech/.well-known/agent-card.json (final URL after redirect; same 5,661-byte body).
+  - url: https://www.tessa.tech/.well-known/agent-card.json
+    http_status: 200
+    note: Redirects to the same aiagent.tessa.tech URL.
+  - url: https://aiagent.tessa.tech/.well-known/agent.json
+    http_status: 404
+    note: Legacy pre-0.3 path. Real JSON 404 from the FastAPI app.
+  - url: https://aiagent.tessa.tech/.well-known/tessa-tech-negative-control-9c1e4b7a.json
+    http_status: 404
+    note: Negative control — a path that cannot exist. Proves the host does not echo or catch-all /.well-known/*.
+  - url: https://aiagent.tessa.tech/a2a
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tasks/get","params":{"id":"apis-io-nonexistent-probe"}}'
+    http_status: 200
+    response: '{"jsonrpc":"2.0","id":1,"error":{"code":-32001,"message":"Task ''apis-io-nonexistent-probe'' was not found."}}'
+    note: A real A2A JSON-RPC responder — TaskNotFoundError (-32001) is the A2A-defined code for an unknown task id. No message/send was issued; no lead, booking or claim was created.
+  - url: https://aiagent.tessa.tech/.well-known/did.json
+    http_status: 200
+    content_type: application/did+json
+    note: 'did:web:tessa.tech document whose service[] lists this card (type A2AAgentCard) and the MCP server (type MCPServer). Saved to well-known/tessa-tech-did.json.'
+  - url: https://a2aregistry.org
+    note: The card was first seen as one of 415 agents listed on a2aregistry.org (fetched 2026-09-19, author "TESSA Marketing & Technology"), which is how this provider entered the harvest backlog. The registry listing was the lead; the card above was fetched directly from the provider's host.
+agent_card:
+  name: TESSA Marketing & Technology
+  description: >-
+    Full-service digital marketing, web development, and AI agent readiness firm (McLean, VA, est. 2012). Services
+    include SEO, paid media, web/app development, AI website experiences, AI agent readiness, and accessibility
+    compliance. Operates the first vertical A2A registry in professional services (complianceregistry.net).
+  url: https://aiagent.tessa.tech
+  version: 1.1.0
+  protocol_version: 0.3.0
+  preferred_transport: JSONRPC
+  additional_interfaces:
+  - {url: 'https://aiagent.tessa.tech', transport: JSONRPC}
+  provider:
+    organization: TESSA Marketing & Technology
+    url: https://tessa.tech
+  documentation_url: https://tessa.tech
+  icon_url: https://tessa.tech/wp-content/uploads/2024/12/tessa-icon-256.png
+  icon_url_status: 404
+  capabilities:
+    streaming: false
+    push_notifications: false
+  default_input_modes: [application/json, text/plain]
+  default_output_modes: [application/json, text/plain]
+  security_schemes: null
+  security: null
+  skill_count: 9
+  skills:
+  - {id: tessa-services, name: TESSA Services Catalog, tags: [services, catalog, marketing, seo, paid-media, web-development, app-development, ai, ai-experiences, agent-readiness, accessibility, wcag, ada]}
+  - {id: tessa-case-studies, name: TESSA Case Studies, tags: [case-studies, portfolio, results, proof, outcomes, growth, traffic, revenue, social-proof]}
+  - {id: ai-readiness-assessment, name: AI Agent Readiness Assessment, input_modes: [application/json], tags: [ai-readiness, agent-discovery, agent-optimization, audit, schema, json-ld, structured-data, llms-txt, well-known, robots-txt, discoverability]}
+  - {id: find-professional-services-firm, name: Find a Professional Services Firm, input_modes: [application/json], tags: [directory, search, firm-discovery, professional-services, compliance, marketing, vendor-discovery, rfq, rfp]}
+  - {id: get-wcag-audit, name: "Get TESSA's WCAG 2.2 AA Accessibility Audit Offering", tags: [accessibility, wcag, wcag-2.2, audit, vpat, acr, ada, section-508, compliance, remediation, screen-reader, keyboard-navigation]}
+  - {id: request-strategy-session, name: Book a Strategy Session with TESSA, input_modes: [application/json], tags: [lead, booking, strategy-session, calendar, google-calendar, google-meet, consultation, discovery-call, appointment], side_effect: creates a Google Calendar event with a Google Meet link and emails the prospect}
+  - {id: request-introduction, name: Request an Introduction, input_modes: [application/json], tags: [lead, contact, introduction, warm-intro, referral, lead-routing, directory], side_effect: logs a lead and forwards an intro email}
+  - {id: claim-listing, name: Claim a Directory Listing, input_modes: [application/json], tags: [claim, ownership, verification, directory, listing-control, yelp-model], side_effect: logs a claim; a representative verifies by email within one business day (pre-OAuth stub per the card)}
+  - {id: request-quote, name: Request a Quote from a Directory Firm, input_modes: [application/json], tags: [quote, rfq, scope, budget, lead, directory, vendor-pricing, estimate], side_effect: records to directory_leads and emails the firm}
+  meta:
+    publisher: TESSA Marketing & Technology
+    operates_registries: [https://complianceregistry.net, https://marketingregistry.org]
+    tagline: Be CertAIn.
+    contact: sales@tessa.tech
+    did: did:web:tessa.tech
+conformance:
+  spec: A2A 1.0.0
+  grade: conformant
+  protocol_version: '0.3.0'
+  preferred_transport: JSONRPC
+  hard_checks:
+    capabilities_is_object: true
+    protocol_version_present: true
+    skills_is_array: true
+  optional_fields:
+    preferred_transport: true
+    default_input_modes: true
+    default_output_modes: true
+  grade_basis: >-
+    Graded against the A2A 1.0.0 hard checks. capabilities is an OBJECT (pass) with streaming and
+    pushNotifications, both false. protocolVersion is present at the top level (pass), declared as "0.3.0".
+    skills is an ARRAY (pass) of nine skills, each with id, name, description and tags. All three optional
+    discriminators are present: preferredTransport (JSONRPC), defaultInputModes and defaultOutputModes
+    (application/json + text/plain). This is a 0.3.0-shaped card — top-level url + preferredTransport +
+    additionalInterfaces + protocolVersion rather than the 1.0.0 supportedInterfaces[] block — and it is
+    internally consistent with that revision.
+  deviations:
+  - field: protocolVersion / url / preferredTransport / additionalInterfaces
+    observed: 0.3.0 top-level shape; no supportedInterfaces[]
+    note: >-
+      Valid for A2A 0.3.0, which the card declares. A reader written against A2A 1.0.0 looks for
+      supportedInterfaces[].protocolBinding and will not find it. Recorded because both shapes coexist in the
+      catalog, not as a fault.
+  - field: url
+    observed: https://aiagent.tessa.tech (host root)
+    note: >-
+      The card's url is the host root, while the provider's own root document says the A2A JSON-RPC endpoint is
+      "POST / or /a2a". A tasks/get probe against /a2a returned a proper A2A -32001 TaskNotFound, so both paths
+      appear to be served; the card points at the root form.
+  - field: securitySchemes / security
+    observed: absent
+    note: >-
+      The card declares no authentication scheme. Live probing agrees: the A2A endpoint, the agent card and the
+      MCP server all answered anonymously. Four of the nine skills create real side effects (a calendar booking,
+      a lead, a claim, a quote request) with no credential gate other than the prospect email the caller supplies.
+  - field: iconUrl
+    observed: https://tessa.tech/wp-content/uploads/2024/12/tessa-icon-256.png
+    note: Returned HTTP 404 (nginx "404 Not Found", 548 bytes) when fetched 2026-09-19. A broken icon link, not a conformance failure.
+  - field: skills[].examples
+    observed: absent on every skill
+    note: Optional per-skill field; the card relies on descriptions and tags. Four skills declare inputModes application/json, the rest inherit the defaults.
+  - field: signatures
+    observed: absent
+    note: No JWS signature block; the card's authenticity rests on TLS to aiagent.tessa.tech plus the did:web document that references it.
+surface_relationship:
+  note: >-
+    TESSA publishes three agent surfaces on one host and they are projections of one service: A2A — nine skills
+    at https://aiagent.tessa.tech (JSON-RPC), plus a per-service card fleet under /s/{slug}/agent-card.json
+    (28 service cards indexed at /s, each with its own /s/{slug}/a2a endpoint) and per-tenant cards under
+    /t/{slug}/; MCP — ten tools at https://aiagent.tessa.tech/mcp/ (Streamable HTTP, anonymous; see
+    mcp/tessa-tech-mcp.yml), nine of which correspond one-to-one with the A2A skills (assess_ai_readiness ↔
+    ai-readiness-assessment, and so on) with get_firm_profile the one MCP-only tool; REST — 51 operations in
+    the FastAPI OpenAPI (see openapi/), of which the firm profile, introduction, claim, verify, removal and
+    takedown routes back the directory skills (see mcp/tessa-tech-tool-crosswalk.yml). A fourth, separate MCP
+    server runs on the WordPress apex at https://tessa.tech/wp-json/mcp/mcp-oauth-server behind OAuth 2.1
+    (scope "mcp"); it is not referenced by this card.

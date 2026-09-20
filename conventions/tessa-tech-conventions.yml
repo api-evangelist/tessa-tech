@@ -1,0 +1,116 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  Live probes of aiagent.tessa.tech (OpenAPI, MCP initialize/tools/list, A2A tasks/get, /healthz, response headers) and
+  tessa.tech (OAuth discovery, robots.txt, llms.txt, Cloudflare 429) on 2026-09-19, plus the 51-operation OpenAPI at
+  openapi/tessa-tech-agent-directory-openapi.yml and the 10 MCP inputSchemas in mcp/tessa-tech-mcp-tools-list.json.
+summary: >-
+  Cross-cutting semantics for TESSA's agent surfaces. Three transports share one host: REST (FastAPI, anonymous,
+  detail-envelope errors), MCP (Streamable HTTP, session header, anonymous, ten tools) and A2A (JSON-RPC 0.3.0,
+  anonymous). There is no idempotency mechanism, no pagination protocol beyond a `limit` argument, no versioning, no
+  published rate limits and no reversal operation for any of the four lead-creating writes. An agent should treat the
+  MCP/A2A write tools as fire-once.
+authentication:
+  styles: [anonymous, oauth2_authorization_code_pkce (WordPress MCP only), admin_token (operator routes only)]
+  see: authentication/tessa-tech-authentication.yml
+transports:
+  - style: rest
+    base_url: https://aiagent.tessa.tech
+    notes: FastAPI; JSON in/out; 421 host-scoped routing for registry paths (see errors/).
+  - style: mcp
+    endpoint: https://aiagent.tessa.tech/mcp/
+    session: 'Server-issued mcp-session-id response header on initialize; MUST be echoed on every subsequent request (400 "Missing session ID" otherwise). Accept MUST include text/event-stream (406 otherwise). Responses arrive as SSE frames (event: message / data: {jsonrpc...}).'
+    protocol_version: '2025-06-18'
+  - style: a2a
+    endpoint: https://aiagent.tessa.tech (also /a2a)
+    methods_declared: [message/send, tasks/get, tasks/cancel]
+    notes: JSON-RPC 2.0; streaming and pushNotifications both false in the card, so message/stream is not offered.
+idempotency:
+  documented: false
+  header: null
+  coverage: none
+  scope: []
+  notes: >-
+    No Idempotency-Key (or any replay key) in the 51-operation OpenAPI, in the 10 MCP inputSchemas, or in the A2A
+    card. The mutating surface — REST takedown/removal/verify submits and vectors/upsert|delete; MCP
+    request_strategy_session, request_introduction, claim_listing, request_quote and their A2A twins — has no replay
+    protection. No Idempotency pointer is emitted; the agent-readiness idempotency dimension is a genuine zero.
+  agent_risk: >-
+    Retrying request_strategy_session after a timeout can book two calendar slots and email the prospect twice;
+    retrying request_introduction / request_quote emails the target firm twice. Callers should treat these as
+    fire-once and confirm via the returned scheduled time / lead acknowledgement rather than retrying.
+reversibility:
+  grade: none
+  write_surfaces:
+    - operation: request_strategy_session (MCP) / request-strategy-session (A2A)
+      effect: Creates a Google Calendar event + Meet link and emails the prospect.
+      reversal: null
+      window: null
+      notes: No cancel/reschedule tool. A2A tasks/cancel cancels an in-flight task, not a booked event.
+    - operation: request_introduction (MCP) / request-introduction (A2A) / firm_request_introduction__slug__request_introduction_post (REST)
+      effect: Logs a lead and sends an intro email.
+      reversal: null
+      window: null
+    - operation: request_quote (MCP) / request-quote (A2A)
+      effect: Records to directory_leads and emails the firm.
+      reversal: null
+      window: null
+    - operation: claim_listing (MCP) / claim-listing (A2A)
+      effect: Logs a claim intent; TESSA verifies by email within one business day.
+      reversal: null
+      window: null
+      notes: The claim is a stub that grants nothing until a human verifies, which limits the blast radius but is not a reversal path.
+    - operation: takedown_submit_takedown_post / removal_submit_request_removal_post (REST, registry hosts)
+      effect: Requests removal of a directory LISTING (about a third-party firm), verified by emailed token (removal_verify_request_removal_verify__token__get).
+      reversal: null
+      window: null
+      notes: These are themselves the "undo" for a listing the registry created from public records; nothing states whether a removed listing can be restored.
+    - operation: vectors_upsert_vectors_upsert_post / vectors_delete_vectors_delete_post (REST)
+      effect: Writes/deletes points in a vector collection (operator surface).
+      reversal: vectors_delete_vectors_delete_post removes points matching a filter (DeleteRequest {collection, filter}); no restore for a delete.
+      window: null
+  notes: >-
+    No documented window for any reversal and no stated reversal for the four commercial writes, so the dimension
+    grades none (not documented). The A2A card exposes tasks/cancel, which stops a task before completion but is
+    not a reversal of a completed side effect.
+dry_run_mode:
+  supported: false
+  notes: No dry-run / validate-only flag on any REST operation, MCP tool or A2A skill.
+pagination:
+  style: none
+  notes: >-
+    No cursor or page parameters anywhere in the REST spec. The only bound is the MCP tool
+    find_professional_services_firm's integer `limit` argument ("max results"); get_services and get_case_studies
+    accept filter slugs, not pages.
+filtering:
+  mcp: 'get_services {category_slug: marketing|web-development|ai-experiences, service_slug}; get_case_studies {industry, service_slug}; find_professional_services_firm {industry: marketing|compliance|keyword, region, capability, limit}'
+  a2a: Same shapes via the nine skills; four skills declare inputModes application/json.
+request_tracing:
+  supported: true
+  method: probed
+  headers:
+    - name: x-railway-request-id
+      note: 'Present on every aiagent.tessa.tech response (e.g. KDiK7rvdQ0mPdnZso3UVLg) — issued by the Railway edge, not the app; the identifier to quote to support.'
+    - name: x-railway-edge
+      note: 'Edge POP (observed jfk1).'
+    - name: x-hikari-trace
+  documented: false
+versioning:
+  scheme: unversioned-path
+  see: lifecycle/tessa-tech-lifecycle.yml
+error_envelope:
+  rest: '{"detail": string | ValidationError[]} (FastAPI); not RFC 9457'
+  mcp_a2a: 'JSON-RPC 2.0 {"error":{"code","message"}}'
+  see: errors/tessa-tech-problem-types.yml
+rate_limit_signaling:
+  documented: false
+  headers: []
+  observed: 'tessa.tech (apex, Cloudflare) answered a burst of ~40 redirected requests with HTTP 429 challenge pages (text/html "Just a moment..."); no RateLimit-* / Retry-After headers. aiagent.tessa.tech showed no limiting across ~60 requests.'
+  see: rate-limits/tessa-tech-rate-limits.yml
+caching:
+  agent_card: 'Cache-Control: public, max-age=300 on /.well-known/agent-card.json'
+content_negotiation:
+  mcp: 'Accept: application/json, text/event-stream required; responses are text/event-stream.'
+  did: 'application/did+json on /.well-known/did.json'
+discovery_documents:
+  see: well-known/tessa-tech-well-known.yml

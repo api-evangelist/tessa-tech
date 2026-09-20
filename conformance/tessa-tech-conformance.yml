@@ -1,0 +1,122 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  Live probes 2026-09-19 of tessa.tech, www.tessa.tech and aiagent.tessa.tech; the OpenAPI at
+  openapi/tessa-tech-agent-directory-openapi.yml; the discovery documents saved under well-known/; the agent card
+  under a2a/; the MCP initialize/tools/list exchange recorded in mcp/tessa-tech-mcp.yml. Every `conforms: true` row
+  points at a document or response that was actually fetched.
+standards:
+  - id: a2a-agent-card
+    conforms: true
+    evidence: >-
+      https://aiagent.tessa.tech/.well-known/agent-card.json (200, application/json, 5,661 bytes) — A2A 0.3.0-shaped
+      card graded conformant against the A2A 1.0.0 hard checks (capabilities object, protocolVersion present,
+      skills array); see a2a/tessa-tech-a2a.yml. The OpenAPI declares the path itself
+      (operationId well_known_agent_card__well_known_agent_card_json_get).
+    domain_standard: true
+    spec_location: 'openapi/tessa-tech-agent-directory-openapi.yml#/paths/~1.well-known~1agent-card.json/get'
+  - id: a2a-json-rpc
+    conforms: true
+    evidence: >-
+      POST https://aiagent.tessa.tech/a2a tasks/get with an unknown id returned {"error":{"code":-32001,"message":"Task
+      '...' was not found."}} — the A2A-defined TaskNotFoundError code. Root document lists message/send, tasks/get,
+      tasks/cancel. OpenAPI operationIds a2a_endpoint_a2a_post, service_a2a_endpoint_s__slug__a2a_post,
+      tenant_a2a_endpoint_t__slug__a2a_post.
+  - id: a2a-agent-card-extension
+    conforms: true
+    evidence: >-
+      TESSA publishes its own A2A AgentCard extension, "TESSA Professional Services Extension (v1)", as a JSON Schema
+      2020-12 document at https://complianceregistry.net/extensions/tessa-professional-services/v1/schema.json (200,
+      4,572 bytes; $id set; extension_version const 1.0.0; changelog v1.0.0 dated 2026-04-24). The Compliance
+      Registry's agent card declares it under capabilities.extensions[] (required false). The OpenAPI declares the
+      extension routes (extension_schema_extensions_tessa_professional_services_v1_schema_json_get and siblings).
+    domain_standard: true
+    spec_location: 'openapi/tessa-tech-agent-directory-openapi.yml#/paths/~1extensions~1tessa-professional-services~1v1~1schema.json/get'
+  - id: mcp
+    conforms: true
+    evidence: >-
+      Streamable HTTP MCP server at https://aiagent.tessa.tech/mcp/ — initialize returned protocolVersion 2025-06-18,
+      serverInfo tessa-mcp-server 1.30.0; tools/list returned 10 tools with inputSchema; resources/list and
+      prompts/list returned empty arrays. Session negotiated via the mcp-session-id header; 406 on a missing
+      text/event-stream Accept, 400 on a missing session id — both per the Streamable HTTP transport rules.
+  - id: mcp-server-json
+    conforms: true
+    evidence: >-
+      https://aiagent.tessa.tech/.well-known/mcp/server.json (200) validates against the shape of
+      https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json — $schema, reverse-DNS name
+      tech.tessa/tessa-mcp-server, version, remotes[] {type streamable-http, url}. Saved to well-known/tessa-tech-mcp-server.json.
+  - id: did-web
+    conforms: true
+    evidence: >-
+      https://aiagent.tessa.tech/.well-known/did.json (200, application/did+json) — W3C DID Core document for
+      did:web:tessa.tech with @context https://www.w3.org/ns/did/v1, alsoKnownAs and two service entries
+      (A2AAgentCard, MCPServer). tessa.tech/.well-known/did.json redirects to it, which is how did:web resolves.
+      No verificationMethod is published, so the DID binds endpoints but not keys.
+  - id: rfc8414-authorization-server-metadata
+    conforms: true
+    evidence: https://tessa.tech/.well-known/oauth-authorization-server (200, 531 bytes) — issuer, authorization/token/revocation endpoints, grant types, PKCE methods, scopes_supported. Saved to well-known/.
+  - id: rfc9728-protected-resource-metadata
+    conforms: true
+    evidence: https://tessa.tech/.well-known/oauth-protected-resource (200, 181 bytes) — resource, authorization_servers, bearer_methods_supported, scopes_supported. Names the WordPress MCP server; the aiagent.tessa.tech MCP resource has no such document (404).
+  - id: oauth2
+    conforms: true
+    evidence: OAuth 2.1-style authorization server on tessa.tech — authorization_code + refresh_token only, PKCE S256, public clients (token_endpoint_auth_methods_supported ["none"]), RFC 9207 iss parameter. Gates the WordPress MCP server only.
+  - id: oauth2-pkce
+    conforms: true
+    evidence: code_challenge_methods_supported ["S256"] in the RFC 8414 document.
+  - id: oauth-client-id-metadata-document
+    conforms: true
+    evidence: client_id_metadata_document_supported true in the RFC 8414 document (the MCP authorization spec's URL-as-client_id registration pattern).
+  - id: rfc7591-dynamic-client-registration
+    conforms: false
+    evidence: No registration_endpoint in the RFC 8414 document; TESSA chose client-id metadata documents instead.
+  - id: oidc-discovery
+    conforms: false
+    evidence: /.well-known/openid-configuration returns 404 on tessa.tech and aiagent.tessa.tech.
+  - id: llms-txt
+    conforms: true
+    evidence: https://tessa.tech/llms.txt (200, text/plain, 5,219 bytes; Yoast-generated) plus a Markdown pricing twin at https://tessa.tech/pricing.md linked from it. Saved to llms/.
+  - id: robots-ai-directives
+    conforms: true
+    evidence: tessa.tech/robots.txt names 13 AI user-agents with Allow rules and a comment pointing them at /llms.txt; aiagent.tessa.tech/robots.txt allows GPTBot, ClaudeBot, Anthropic-AI, PerplexityBot.
+  - id: openapi-3.1
+    conforms: true
+    evidence: https://aiagent.tessa.tech/openapi.json is OpenAPI 3.1.0 with 48 paths / 51 operations (FastAPI-generated); byte-identical on complianceregistry.net and marketingregistry.org.
+  - id: json-schema-2020-12
+    conforms: true
+    evidence: The TESSA Professional Services extension schema declares $schema https://json-schema.org/draft/2020-12/schema; OpenAPI 3.1 component schemas are 2020-12 dialect.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      FastAPI "detail" envelopes throughout (422 HTTPValidationError in the spec; observed 401/404/421/422 bodies all
+      carry a top-level detail member); zero application/problem+json. See errors/tessa-tech-problem-types.yml.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt and /security.txt 404 on tessa.tech (nginx 404) and 404/421 on aiagent.tessa.tech.
+  - id: rfc9727-api-catalog
+    conforms: false
+    evidence: /.well-known/api-catalog and api-catalog.json 404 on every host.
+  - id: apis-json
+    conforms: false
+    evidence: /apis.json, /apis.yml and /.well-known/apis.json 404 (apex) / 421 (agent host).
+  - id: aauth-resource
+    conforms: false
+    evidence: /.well-known/aauth-resource.json 404 on every host.
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: No deprecation policy, no Sunset/Deprecation headers observed, no operation marked deprecated in the spec.
+  - id: idempotency-key
+    conforms: false
+    evidence: No Idempotency-Key parameter in the 51-operation spec and none in the 10 MCP inputSchemas; see conventions/tessa-tech-conventions.yml.
+  - id: hsts
+    conforms: false
+    evidence: No Strict-Transport-Security header on tessa.tech or aiagent.tessa.tech (security/tessa-tech-domain-security.yml).
+  - id: wcag-2.2-aa
+    conforms: null
+    evidence: >-
+      TESSA SELLS WCAG 2.2 AA audits (get_wcag_audit tool; /accessibility-audits/ page) but publishes no accessibility
+      conformance report / VPAT for its own properties (/accessibility-statement/, /vpat/ 404). Recorded as a market
+      claim, not a conformance of this API. Not counted.
+compliance_program:
+  published: false
+  note: No trust center, certifications page, SOC 2 / ISO 27001 claim, bug bounty or vulnerability-disclosure page found (probe-security-programs.py vdp=none trust=none). No Compliance pointer is emitted.

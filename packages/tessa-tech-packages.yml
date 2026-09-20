@@ -1,0 +1,34 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  Registry sweeps 2026-09-19: npm search (registry.npmjs.org/-/v1/search?text=tessa mcp), PyPI (pypi.org/pypi/tessa-mcp-server/json
+  -> 404), GitHub repository search (api.github.com/search/repositories?q=tessa+mcp), the wordpress.org plugin API,
+  plus the provider's llms.txt, agent card, server.json and root document. No first-party client library for any TESSA
+  API surface is published in any package registry.
+summary:
+  first_party_sdk_count: 0
+  first_party_non_sdk_package_count: 1
+  third_party_package_count: 0
+  note: >-
+    TESSA ships NO SDK. Its integration story is protocol-native: a hosted MCP server (mcp/tessa-tech-mcp.yml), an
+    A2A agent (a2a/), and a FastAPI OpenAPI — all reachable with a generic MCP/A2A/HTTP client. Because no official
+    client library exists, this repo emits NO `SDKs` pointer; the sdk_count check must read a genuine zero. The MCP
+    server.json names no npm/PyPI package (remotes[] only), so there is no stdio install path either.
+packages: []
+related_first_party_not_sdk:
+  - name: VF2WP – Simple Voiceflow Integration by TESSA AI
+    registry: wordpress.org
+    slug: vf2wp-simple-voiceflow-integration-by-tessa-ai
+    url: https://wordpress.org/plugins/vf2wp-simple-voiceflow-integration-by-tessa-ai/
+    author: https://profiles.wordpress.org/tessatech/
+    official: true
+    version: 1.0.0
+    published: '2025-08-28'
+    note: A WordPress plugin embedding a Voiceflow chatbot — a TESSA product, not a client for any TESSA API. Version and date read from api.wordpress.org plugin_information. Listed for completeness; it does not count toward sdk_count.
+github_organization:
+  found: false
+  checked: '2026-09-19'
+  note: >-
+    api.github.com/orgs/tessa-tech and /users/tessamarketing answered 403 (unauthenticated rate limit), so no org was
+    confirmed and none is wired. The one repository search hit, Qualislab-IA/tessa-mcp-skill, is a third-party repo
+    with no evident relationship to this company and is NOT recorded as TESSA's.

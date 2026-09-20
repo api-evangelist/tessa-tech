@@ -1,0 +1,73 @@
+generated: '2026-09-19'
+method: derived
+format: fastapi-json
+source: >-
+  Derived from the 4xx responses declared in openapi/tessa-tech-agent-directory-openapi.yml (OpenAPI 3.1.0, 51
+  operations; verbatim source openapi/_original/tessa-tech-openapi.json) and enriched with the error bodies actually
+  observed on live unauthenticated responses 2026-09-19. The API is FastAPI-generated: it does NOT use RFC 9457
+  application/problem+json; every error is application/json with a `detail` member. The MCP and A2A surfaces on the
+  same host return JSON-RPC 2.0 error objects instead.
+rfc9457: false
+envelope:
+  media_type: application/json
+  default_shape: '{ "detail": string | [ { "loc": [...], "msg": string, "type": string, "input": any } ] }'
+  note: >-
+    `detail` is a string for hand-raised HTTPExceptions (401, 404, 421) and an array of ValidationError objects for
+    request-validation failures (422). The spec declares only 200 and 422 responses; 401/404/421 were observed live.
+validation_error_shape:
+  schema: HTTPValidationError
+  item_schema: ValidationError
+  fields:
+    - {name: loc, type: array<string|integer>, required: true, description: 'Location of the offending field, e.g. ["query","collection"].'}
+    - {name: msg, type: string, required: true, description: Human-readable validation message.}
+    - {name: type, type: string, required: true, description: 'Machine error type, e.g. "missing".'}
+    - {name: input, type: any, required: false, description: The rejected input value (null when absent).}
+    - {name: ctx, type: object, required: false, description: Additional context for the error type.}
+problems:
+  - status: 422
+    title: Request validation failed
+    schema: HTTPValidationError
+    declared_in_spec: true
+    observed: 'GET /vectors/info -> {"detail":[{"type":"missing","loc":["query","collection"],"msg":"Field required","input":null}]}'
+    remediation: Read detail[].loc to find the missing/invalid field; the spec's parameters and requestBody schemas are authoritative.
+    source_operations: >-
+      Every operation with parameters or a requestBody declares 422 — 33 of 51, including the {slug}/{service_slug}/{token}
+      path routes, the vectors/* POSTs, takedown/removal/verify submits and the taxonomy routes.
+  - status: 401
+    title: Invalid or missing admin token
+    declared_in_spec: false
+    observed: 'GET /admin/requests and GET /internal/visibility.json -> {"detail":"Invalid or missing admin token"}'
+    remediation: Operator-only routes. No public credential exists; the OpenAPI declares no securityScheme for them. Agents should not call /admin/* or /internal/*.
+    source_operations: [admin_requests_admin_requests_get, admin_first_hit_admin_first_hit_get, internal_visibility_internal_visibility_get, internal_visibility_json_internal_visibility_json_get]
+  - status: 404
+    title: Not Found
+    declared_in_spec: false
+    observed: 'GET /.well-known/agent.json -> {"detail":"Not Found"} (22 bytes)'
+    remediation: Real JSON 404 from the app — safe to treat as a definitive miss (this host does not soft-404).
+  - status: 421
+    title: No registry configured for this host
+    declared_in_spec: false
+    observed: 'GET https://aiagent.tessa.tech/registry.json -> {"detail":"No registry configured for host ''aiagent.tessa.tech''"}'
+    remediation: >-
+      Host-scoped routing. /registry.json, /registry/jsonrpc, /taxonomy*, /extensions*, /llms.txt, /apis.json, /security.txt
+      and the firm routes /{slug}* are served only on the registry hosts (complianceregistry.net, marketingregistry.org).
+      Retry the same path on a registry host; do not retry on aiagent.tessa.tech.
+    source_operations: [registry_index_registry_json_get, registry_jsonrpc_registry_jsonrpc_post, taxonomy_index_taxonomy_get, extensions_index_extensions__get, firm_landing__slug__get, firm_profile__slug__profile_json_get]
+  - status: 429
+    title: Rate limited (apex only)
+    declared_in_spec: false
+    observed: 'Cloudflare "Just a moment..." challenge page (text/html) from tessa.tech after a burst of ~40 requests via www redirects. Not observed on aiagent.tessa.tech.'
+    remediation: Back off and retry the apex; the agent host was unaffected. See rate-limits/tessa-tech-rate-limits.yml.
+json_rpc_errors:
+  media_type: application/json (POST bodies) / text/event-stream (MCP after initialize)
+  shape: '{ "jsonrpc": "2.0", "id": ..., "error": { "code": int, "message": string } }'
+  observed:
+    - {surface: MCP, http_status: 406, code: -32600, message: 'Not Acceptable: Client must accept text/event-stream', remediation: 'Send Accept: application/json, text/event-stream.'}
+    - {surface: MCP, http_status: 400, code: -32600, message: 'Bad Request: Missing session ID', remediation: 'Call initialize first and echo the mcp-session-id response header on every later request.'}
+    - {surface: A2A, http_status: 200, code: -32001, message: "Task '<id>' was not found.", remediation: 'A2A TaskNotFoundError; the task id is unknown or expired.'}
+  wordpress_mcp:
+    - {surface: WordPress MCP (tessa.tech/wp-json/mcp/mcp-oauth-server), http_status: 401, body: '{"code":"mcp_unauthorized","message":"MCP authentication required.","data":{"status":401}}', remediation: 'Obtain a token from https://tessa.tech/oauth/token (authorization_code + PKCE, scope mcp). No WWW-Authenticate header is returned; discover the AS via /.well-known/oauth-protected-resource.'}
+    - {surface: WordPress MCP adapter route (mcp-adapter-default-server), http_status: 401, body: '{"code":"rest_forbidden","message":"Sorry, you are not allowed to do that.","data":{"status":401}}'}
+see_also:
+  conventions: conventions/tessa-tech-conventions.yml
+  mcp: mcp/tessa-tech-mcp.yml

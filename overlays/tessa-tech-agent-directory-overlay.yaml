@@ -1,0 +1,53 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for TESSA Agent Directory API
+  version: 1.0.0
+  description: >-
+    Records exactly what the refined copy openapi/tessa-tech-agent-directory-openapi.yml adds on top of the verbatim
+    harvest openapi/_original/tessa-tech-openapi.json (sha256 3349c7e2613aca4f...). The original is never mutated. Every
+    action below is either a provider-published fact gathered from another TESSA document (servers, contact, tags) or a
+    labelled API Evangelist annotation (x-apievangelist-*). Generated 2026-09-19.
+extends: openapi/_original/tessa-tech-openapi.json
+actions:
+  - target: $
+    description: Add servers[] — the harvested spec declares none. Hosts from the provider's root document and verified byte-identical specs on both registry hosts.
+    update:
+      servers:
+        - url: https://aiagent.tessa.tech
+          description: TESSA's own agent host — agent card, A2A JSON-RPC, MCP (/mcp/), service cards (/s), OpenAPI. Registry-scoped routes return 421 here.
+        - url: https://complianceregistry.net
+          description: TESSA-operated Compliance Registry (same application). Registry routes resolve here.
+        - url: https://marketingregistry.org
+          description: TESSA-operated Local Business / Marketing Registry (same application).
+  - target: $.info
+    description: Add contact and a substantive description; contact values from the agent card and server.json.
+    update:
+      contact: {name: TESSA Marketing & Technology, url: 'https://tessa.tech', email: sales@tessa.tech}
+      x-apievangelist-provenance: {harvested: '2026-09-19', method: searched, source: 'https://aiagent.tessa.tech/openapi.json'}
+  - target: $.info
+    description: API Evangelist annotations pointing at the sibling artifacts.
+    update:
+      x-apievangelist-artifacts:
+        authentication: authentication/tessa-tech-authentication.yml
+        conventions: conventions/tessa-tech-conventions.yml
+        errors: errors/tessa-tech-problem-types.yml
+        mcp: mcp/tessa-tech-mcp.yml
+        crosswalk: mcp/tessa-tech-tool-crosswalk.yml
+        a2a: a2a/tessa-tech-a2a.yml
+        agentic_access: agentic-access/tessa-tech-agentic-access.yml
+  - target: "$.paths['/admin/requests'].get"
+    description: Observed live — 401 admin token the spec does not declare.
+    update: {x-apievangelist-observed-auth: 'HTTP 401 {"detail":"Invalid or missing admin token"} (2026-09-19)'}
+  - target: "$.paths['/internal/visibility.json'].get"
+    update: {x-apievangelist-observed-auth: 'HTTP 401 {"detail":"Invalid or missing admin token"} (2026-09-19)'}
+  - target: "$.paths['/registry.json'].get"
+    description: Host-scoped route.
+    update: {x-apievangelist-host-scoped: 'HTTP 421 on aiagent.tessa.tech ("No registry configured for host"); served on complianceregistry.net and marketingregistry.org'}
+  - target: "$.paths['/.well-known/agent-card.json'].get"
+    update: {x-apievangelist-verified: 'HTTP 200 application/json 5,661 bytes (2026-09-19); graded conformant in a2a/tessa-tech-a2a.yml'}
+  - target: "$.paths['/.well-known/mcp/server.json'].get"
+    update: {x-apievangelist-verified: 'HTTP 200 (2026-09-19); saved to well-known/tessa-tech-mcp-server.json'}
+  - target: "$.paths['/.well-known/did.json'].get"
+    update: {x-apievangelist-verified: 'HTTP 200 application/did+json (2026-09-19); saved to well-known/tessa-tech-did.json'}
+  - target: "$.paths['/a2a'].post"
+    update: {x-apievangelist-verified: 'tasks/get with an unknown id returned A2A -32001 TaskNotFound (2026-09-19)'}

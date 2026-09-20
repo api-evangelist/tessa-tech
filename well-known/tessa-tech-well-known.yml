@@ -1,0 +1,222 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Live GET probes of the named /.well-known/* path list on tessa.tech, www.tessa.tech and aiagent.tessa.tech
+  (the agent, MCP and A2A host) on 2026-09-19. Every row below is a request that was actually issued; every
+  status is the one returned. Two hosts a fetched document names were also probed: the oauth-protected-resource
+  document's authorization_servers[] names https://tessa.tech itself (rows below), and the OpenAPI declares
+  /.well-known/mcp/server.json and /.well-known/did.json, which were fetched by name.
+summary:
+  hosts_probed: 3
+  paths_probed: 55
+  documents_served: 7
+  hit_count: 7
+  path_echo_control: passed
+  note: >-
+    TESSA serves a real discovery surface split across two hosts. The WordPress apex tessa.tech publishes RFC
+    8414 authorization-server metadata and RFC 9728 protected-resource metadata for its OAuth-gated WordPress
+    MCP server (resource https://tessa.tech/wp-json/mcp/mcp-oauth-server, scope "mcp", PKCE S256,
+    client_id_metadata_document_supported), plus /llms.txt and a robots.txt that explicitly welcomes AI agents;
+    it 3xx-redirects /.well-known/agent-card.json and /.well-known/did.json to the agent host. The agent host
+    aiagent.tessa.tech serves the A2A agent card (captured in a2a/), an MCP server.json
+    (static.modelcontextprotocol.io 2025-12-11 schema, remotes[] streamable-http at /mcp/), and a did:web
+    document. Neither host serves security.txt, OIDC discovery, an RFC 9727 API catalog, APIs.json, an AAuth
+    resource document, ai-plugin.json or a UCP/ACP manifest. The MCP resource host (aiagent.tessa.tech) serves NO
+    RFC 9728 protected-resource metadata of its own — consistent with that MCP server being anonymous. A
+    negative-control path that cannot exist 404s on both origins, so every 200 above is a served document.
+    Both WordPress-host 404s are real WordPress "Page not found" pages (152,851 bytes) and the FastAPI 404s are
+    22-byte JSON, not SPA shells. Mid-probe, tessa.tech answered a burst of redirected www requests with
+    Cloudflare 429 challenge pages ("Just a moment..."); those paths had already been probed directly on the
+    apex and are recorded there.
+hosts:
+- host: tessa.tech
+  role: Website (WordPress on WP Engine behind Cloudflare); RFC 8414 issuer; hosts the OAuth-gated WordPress MCP server
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    bytes: 531
+    file: tessa-tech-oauth-authorization-server.json
+    standard: RFC 8414 OAuth 2.0 Authorization Server Metadata
+    note: >-
+      issuer https://tessa.tech; authorization_code + refresh_token; PKCE S256; scopes_supported ["mcp"];
+      token_endpoint_auth_methods_supported ["none"] (public clients);
+      client_id_metadata_document_supported true (OAuth Client ID Metadata Documents, the MCP-authorization
+      client-registration path); authorization_response_iss_parameter_supported true (RFC 9207). Served with a
+      trailing-slash redirect (/.well-known/oauth-authorization-server -> .../oauth-authorization-server/).
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json
+    bytes: 181
+    file: tessa-tech-oauth-protected-resource.json
+    standard: RFC 9728 OAuth 2.0 Protected Resource Metadata
+    note: >-
+      resource https://tessa.tech/wp-json/mcp/mcp-oauth-server; authorization_servers ["https://tessa.tech"];
+      bearer_methods_supported ["header"]; scopes_supported ["mcp"]. Names the WordPress MCP server as the
+      protected resource; the anonymous MCP server on aiagent.tessa.tech is a different resource and is not
+      covered by this document.
+  - path: /.well-known/agent-card.json
+    status: 200
+    redirect: https://aiagent.tessa.tech/.well-known/agent-card.json
+    file: ../a2a/tessa-tech-agent-card.json
+    note: 3xx to the agent host; the body captured is the agent host's card (see the aiagent.tessa.tech row). Recorded here because the apex is where an agent starting from the company domain would look.
+  - path: /.well-known/did.json
+    status: 200
+    redirect: https://aiagent.tessa.tech/.well-known/did.json
+    file: tessa-tech-did.json
+    note: 3xx to the agent host, which is correct for did:web:tessa.tech resolution (the DID method resolves https://tessa.tech/.well-known/did.json).
+  - path: /llms.txt
+    status: 200
+    content_type: text/plain
+    bytes: 5219
+    file: ../llms/tessa-tech-llms.txt
+    standard: llms.txt
+    note: Yoast SEO v28.3-generated index; links the /pricing/ page and a /pricing.md Markdown twin "for agents that prefer it".
+  - path: /.well-known/agent.json
+    status: 404
+    note: Legacy pre-0.3 agent-card path. WordPress "Page not found" (152,851 bytes).
+  - path: /.well-known/security.txt
+    status: 404
+    note: nginx 404 (548 bytes) — served before WordPress, so this is the web tier itself saying the file does not exist.
+  - path: /security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /robots.txt
+    status: 200
+    content_type: text/plain
+    bytes: 1607
+    note: >-
+      Not a well-known document, recorded because it is an agent-posture signal: explicit Allow rules for GPTBot,
+      OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-User, Claude-SearchBot, anthropic-ai, PerplexityBot,
+      Perplexity-User, Google-Extended, Applebot-Extended, CCBot and meta-externalagent, with a comment pointing
+      LLMs at /llms.txt.
+  - path: /.well-known/tessa-tech-negative-control-9c1e4b7a.json
+    status: 404
+    control: negative
+    note: A path that cannot exist. Its 404 proves the host does not echo or catch-all /.well-known/* requests.
+- host: www.tessa.tech
+  role: Alias — 3xx to the apex for every path
+  documents:
+  - {path: /.well-known/agent-card.json, status: 200, redirect: 'https://aiagent.tessa.tech/.well-known/agent-card.json', note: Same card as the agent host.}
+  - {path: /.well-known/oauth-authorization-server, status: 200, redirect: 'https://tessa.tech/.well-known/oauth-authorization-server/', note: Same document as the apex row.}
+  - {path: /.well-known/oauth-protected-resource, status: 200, redirect: 'https://tessa.tech/.well-known/oauth-protected-resource/', note: Same document as the apex row.}
+  - {path: /llms.txt, status: 200, note: Same document as the apex row.}
+  - {path: /.well-known/agent.json, status: 404, redirect: 'https://tessa.tech/.well-known/agent.json'}
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/api-catalog.json, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/ucp.json, status: 404}
+  - {path: /.well-known/acp.json, status: 429, note: 'Cloudflare challenge page ("Just a moment...") returned by the apex after the redirect — a burst-rate response to this probe, not a document. The apex row records the real 404.'}
+  - {path: /.well-known/aauth-resource.json, status: 429, note: Cloudflare challenge; apex row records 404.}
+  - {path: /.well-known/apis.json, status: 429, note: Cloudflare challenge; apex row records 404.}
+  - {path: /apis.json, status: 429, note: Cloudflare challenge; apex row records 404.}
+  - {path: /apis.yml, status: 429, note: Cloudflare challenge; apex row records 404.}
+  - {path: /.well-known/tessa-tech-negative-control-9c1e4b7a.json, status: 429, control: negative, note: Cloudflare challenge; the apex control returned 404.}
+- host: aiagent.tessa.tech
+  role: Agent host — A2A agent card + JSON-RPC, MCP server (Streamable HTTP at /mcp/), OpenAPI servers[] host, did:web document (FastAPI on Railway)
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: application/json
+    bytes: 5661
+    file: ../a2a/tessa-tech-agent-card.json
+    standard: A2A Agent Card (protocolVersion 0.3.0)
+    note: Saved verbatim under a2a/ and graded in a2a/tessa-tech-a2a.yml (conformant). Cache-Control public, max-age=300.
+  - path: /.well-known/mcp/server.json
+    status: 200
+    content_type: application/json
+    bytes: 709
+    file: tessa-tech-mcp-server.json
+    standard: MCP server.json (https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json)
+    note: >-
+      name "tech.tessa/tessa-mcp-server", version 1.0.1, remotes[] one entry {type streamable-http, url
+      https://aiagent.tessa.tech/mcp/}; _meta.publisher-provided carries tags, publisher, support_email
+      sales@tessa.tech and the two operated registries. Path declared in the provider's own OpenAPI
+      (operationId mcp_server_manifest__well_known_mcp_server_json_get), which is why it was probed.
+  - path: /.well-known/did.json
+    status: 200
+    content_type: application/did+json
+    bytes: 358
+    file: tessa-tech-did.json
+    standard: W3C DID Core (did:web)
+    note: >-
+      id did:web:tessa.tech; alsoKnownAs https://tessa.tech; service[] lists the agent card (type A2AAgentCard)
+      and the MCP server (type MCPServer, https://aiagent.tessa.tech/mcp). No verificationMethod, so the
+      document binds identifiers to endpoints but publishes no key. Declared in the OpenAPI
+      (well_known_did_document__well_known_did_json_get).
+  - path: /.well-known/agent.json
+    status: 404
+    note: Legacy pre-0.3 agent-card path. Real JSON 404 ({"detail":"Not Found"}, 22 bytes).
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /security.txt
+    status: 421
+    note: >-
+      421 Misdirected Request with body {"detail":"No registry configured for host 'aiagent.tessa.tech'"} —
+      the app's host-scoped router: this path (like /registry.json, /taxonomy, /extensions, /llms.txt,
+      /{slug}) is only served on the registry hosts complianceregistry.net and marketingregistry.org.
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    note: >-
+      This is the MCP resource host (https://aiagent.tessa.tech/mcp/) and it serves no RFC 9728 metadata. That
+      is consistent with the server being anonymous — initialize and tools/list succeeded with no credential —
+      but it means an MCP client cannot discover an authorization server for this resource, and the RFC 9728
+      document on the apex names a different resource (the WordPress MCP).
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 421
+    note: Host-scoped route (see /security.txt row).
+  - path: /apis.yml
+    status: 421
+    note: Host-scoped route.
+  - path: /llms.txt
+    status: 421
+    note: Host-scoped route; the company llms.txt is on the apex (tessa.tech/llms.txt, captured in llms/).
+  - path: /robots.txt
+    status: 200
+    content_type: text/plain
+    bytes: 151
+    note: 'Allow: / for *, GPTBot, ClaudeBot, Anthropic-AI and PerplexityBot. Served by the app (operationId robots_robots_txt_get).'
+  - path: /.well-known/tessa-tech-negative-control-9c1e4b7a.json
+    status: 404
+    control: negative
+    note: A path that cannot exist. Real JSON 404 — the host does not echo or catch-all /.well-known/*.

@@ -1,0 +1,27 @@
+generated: '2026-09-19'
+method: generated
+source: >-
+  Packaged Agent Skills generated from TESSA's live MCP tools/list (mcp/tessa-tech-mcp-tools-list.json — real
+  inputSchemas, fetched anonymously), the A2A agent card (a2a/tessa-tech-agent-card.json) and the OpenAPI
+  (openapi/tessa-tech-agent-directory-openapi.yml). Every REST operationId is verified verbatim in the spec; every MCP
+  tool name and argument is verified in the captured tools/list; cross-cutting rules cite ../conventions/, ../errors/
+  and ../authentication/. No provider-published skills or AGENTS.md were found to save verbatim.
+skills:
+  - file: tessa-tech-find-a-firm-and-request-an-introduction.md
+    name: Find a professional-services firm and request an introduction
+    api: openapi/tessa-tech-agent-directory-openapi.yml
+    mcp: mcp/tessa-tech-mcp.yml
+    operations: [firm_profile__slug__profile_json_get, firm_request_introduction__slug__request_introduction_post]
+    tools: [find_professional_services_firm, get_firm_profile, request_introduction, request_quote]
+  - file: tessa-tech-assess-ai-agent-readiness.md
+    name: Assess a website's AI agent readiness
+    api: openapi/tessa-tech-agent-directory-openapi.yml
+    mcp: mcp/tessa-tech-mcp.yml
+    operations: [well_known_agent_card__well_known_agent_card_json_get, mcp_server_manifest__well_known_mcp_server_json_get]
+    tools: [assess_ai_readiness, get_services]
+  - file: tessa-tech-book-a-strategy-session.md
+    name: Book a strategy session with TESSA
+    api: openapi/tessa-tech-agent-directory-openapi.yml
+    mcp: mcp/tessa-tech-mcp.yml
+    operations: [service_agent_card_s__slug__agent_card_json_get, service_a2a_endpoint_s__slug__a2a_post]
+    tools: [get_services, get_case_studies, request_strategy_session]

@@ -1,0 +1,28 @@
+generated: '2026-09-19'
+method: searched
+source: https://complianceregistry.net/extensions/tessa-professional-services/v1/changelog
+checked: '2026-09-19'
+scope: >-
+  The only dated changelog TESSA publishes covers the TESSA Professional Services A2A extension, served on the
+  TESSA-operated Compliance Registry host (the route exists in the shared OpenAPI as
+  extension_changelog_extensions_tessa_professional_services_v1_changelog_get and answers 421 on aiagent.tessa.tech).
+  No changelog exists for the REST API, the MCP tool set (serverInfo.version 1.30.0 suggests many releases) or the
+  agent card (version 1.1.0).
+scheme: semver
+current_version: 1.0.0
+entries:
+  - version: 1.0.0
+    date: '2026-04-24'
+    breaking: false
+    highlights:
+      - Initial release alongside the complianceregistry.net anchor launch.
+      - 'Ships with: claim_status, claim_url, takedown_url, last_verified, source_urls, sub_vertical, service_types, industry, service_area, firm_profile, pricing, credentials, trust_signals.'
+      - 'Paired taxonomies: /taxonomy/accessibility-services.json and /taxonomy/environmental-compliance-services.json.'
+    schema: https://complianceregistry.net/extensions/tessa-professional-services/v1/schema.json
+observed_versions:
+  - {surface: OpenAPI info.version, value: 0.1.0, observed: '2026-09-19'}
+  - {surface: Agent card version, value: 1.1.0, observed: '2026-09-19'}
+  - {surface: MCP serverInfo.version, value: 1.30.0, observed: '2026-09-19'}
+  - {surface: MCP server.json version, value: 1.0.1, observed: '2026-09-19'}
+  - {surface: pricing.md "Last updated", value: '2026-08-26', observed: '2026-09-19'}
+  - {surface: privacy policy "Effective date", value: '2026-04-29', observed: '2026-09-19'}

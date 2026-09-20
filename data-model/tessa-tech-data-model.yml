@@ -1,0 +1,168 @@
+generated: '2026-09-19'
+method: derived
+source: Derived from openapi/tessa-tech-agent-directory-openapi.yml (OpenAPI 3.1.0, 9 components.schemas, 51 operations),
+  the path grammar of the directory routes, the live /s service-card index (28 cards), the TESSA Professional Services
+  extension schema (https://complianceregistry.net/extensions/tessa-professional-services/v1/schema.json) and the
+  10 MCP inputSchemas. The FastAPI spec models almost nothing as components (its resources are served as JSON documents
+  and HTML pages), so the entity graph below is read from the routes and the published documents rather than $refs.
+docs: https://aiagent.tessa.tech/docs
+notation: Entities are addressed by URL-safe slugs in the path ({slug}, {service_slug}, {name}, {token}). Relationships
+  use has_one / has_many / belongs_to with the path segment or field in `via`.
+entities:
+- name: Publisher
+  key: null
+  description: TESSA Marketing & Technology — the operator; appears as provider{} in every card and as publisher
+    in /s and server.json.
+- name: Registry
+  key: host
+  description: A vertical A2A registry served per host (complianceregistry.net, marketingregistry.org); has a /registry.json
+    index, taxonomies and extensions. aiagent.tessa.tech has no registry (421).
+- name: Firm
+  key: slug
+  description: A professional-services firm listed in a registry (compiled from public records such as SAM.gov /
+    USAspending.gov per the registry footer); served as /{slug}/agent-card.json, /{slug}/profile.json and an HTML
+    landing.
+- name: FirmProfile
+  key: slug
+  description: 'The dossier for a firm: description, headquarters, founded year, employee band, services, locations,
+    directory meta (publisher, claim URL, takedown URL) and the TESSA Professional Services v1 extension payload.'
+- name: ServiceCard
+  key: slug
+  description: One of 28 per-service A2A agent cards under /s/{slug}/agent-card.json with its own /s/{slug}/a2a
+    endpoint; grouped by category (Core Marketing Services, Web Development & Software, AI-Powered Website Experiences,
+    ...).
+- name: Tenant
+  key: slug
+  description: A tenant namespace under /t/{slug}/ with its own agent card, A2A endpoint and per-service sub-cards
+    (/t/{slug}/s/{service_slug}/).
+- name: Taxonomy
+  key: name (+ version)
+  description: A service-type taxonomy document at /taxonomy/{name}.json or /taxonomy/{name}/v{version} (e.g. accessibility-services,
+    environmental-compliance-services).
+- name: Extension
+  key: tessa-professional-services/v1
+  description: The A2A AgentCard extension (JSON Schema 2020-12) with schema.json, example.json and a changelog;
+    payload lives under _meta['tessa.professional_services.v1'] of a firm card.
+- name: Lead
+  key: null
+  description: A directory_leads record created by request_introduction / request_quote / request_strategy_session
+    (MCP + A2A) or POST /{slug}/request-introduction. Not readable through any public operation.
+- name: Claim
+  key: firm_slug + claim_email
+  description: A claim intent recorded by claim_listing; verified out-of-band by email (verify-listing/confirm/{token}).
+- name: RemovalRequest
+  key: token
+  description: A listing removal / takedown request (POST /request-removal, POST /takedown) confirmed via /request-removal/verify/{token}.
+- name: VectorPoint
+  key: id
+  schema: Point
+  description: 'A vector-store point {id, vector, payload} in a named collection (operator surface: /vectors/search|upsert|delete).'
+  related_schemas:
+  - SearchRequest
+  - UpsertRequest
+  - DeleteRequest
+- name: AgentCard
+  key: host
+  description: The top-level TESSA agent card (9 skills) plus did:web:tessa.tech and the MCP server.json that reference
+    it.
+relationships:
+- from: Publisher
+  to: Registry
+  type: has_many
+  via: operates_registries (_meta in agent card / server.json)
+- from: Registry
+  to: Firm
+  type: has_many
+  via: /registry.json entries and /{slug} routes
+- from: Registry
+  to: Taxonomy
+  type: has_many
+  via: /taxonomy/
+- from: Registry
+  to: Extension
+  type: has_many
+  via: /extensions/
+- from: Firm
+  to: FirmProfile
+  type: has_one
+  via: /{slug}/profile.json
+- from: Firm
+  to: AgentCard
+  type: has_one
+  via: /{slug}/agent-card.json
+- from: Firm
+  to: Lead
+  type: has_many
+  via: /{slug}/request-introduction, request_quote.firm_slug, request_introduction.target_firm_slug
+- from: Firm
+  to: Claim
+  type: has_many
+  via: claim_listing.firm_slug
+- from: Firm
+  to: RemovalRequest
+  type: has_many
+  via: /takedown, /request-removal
+- from: FirmProfile
+  to: Extension
+  type: belongs_to
+  via: _meta['tessa.professional_services.v1']
+- from: Extension
+  to: Taxonomy
+  type: has_many
+  via: service_types slugs queryable from the paired vertical taxonomies
+- from: Publisher
+  to: ServiceCard
+  type: has_many
+  via: /s index (28 cards)
+- from: Tenant
+  to: ServiceCard
+  type: has_many
+  via: /t/{slug}/s/{service_slug}/agent-card.json
+- from: AgentCard
+  to: ServiceCard
+  type: has_many
+  via: get_services response agent_card / a2a_endpoint fields
+- from: VectorPoint
+  to: Registry
+  type: belongs_to
+  via: collection (query parameter on /vectors/info)
+components_schemas:
+- name: Point
+  fields:
+  - id
+  - vector
+  - payload
+- name: SearchRequest
+  fields:
+  - collection
+  - vector
+  - query
+  - limit
+  - prefetch_limit
+  - filter
+- name: UpsertRequest
+  fields:
+  - collection
+  - points
+- name: DeleteRequest
+  fields:
+  - collection
+  - filter
+- name: Body_takedown_submit_takedown_post
+  note: form fields for a takedown
+- name: Body_removal_submit_request_removal_post
+  note: form fields for a removal request
+- name: Body_verify_submit_verify_listing_post
+  note: form fields for listing verification
+- name: HTTPValidationError
+  fields:
+  - detail
+- name: ValidationError
+  fields:
+  - loc
+  - msg
+  - type
+  - input
+  - ctx
+components_note: Field lists are read from the spec's component schemas; see the OpenAPI for types and required
+  flags.

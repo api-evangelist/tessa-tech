@@ -1,0 +1,87 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: https://tessa.tech/privacy-policy/
+signals:
+  global_privacy_control:
+    honored: true
+    url: https://tessa.tech/privacy-policy/
+    section: Global Privacy Control
+    evidence:
+    - source: https://tessa.tech/privacy-policy/
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: >-
+        "Global Privacy Control. We honor the Global Privacy Control (GPC) browser signal as a valid opt-out request
+        for the sharing of personal information. If your browser sends a GPC signal when you visit our Website, we
+        will treat it as an opt-out from sharing for that browser and device."
+    note: >-
+      Set from the published statement only. No Sec-GPC header was sent and no response was interpreted; the policy
+      commits TESSA to treating the signal as an opt-out from sharing, which is the commitment the state universal
+      opt-out regimes require.
+  data_subject_request:
+    url: https://tessa.tech/privacy-policy/
+    section: Your Rights (California Residents) / How to exercise your rights
+    channel: sales@tessa.tech
+    rights_named: [know, delete, correct, opt-out of sale/sharing, non-discrimination (CCPA/CPRA as named in the policy)]
+    authorized_agent: 'Accepted — the policy says TESSA "may require written proof of the agent''s authorization and may require you to verify your own identity directly with us."'
+    evidence:
+    - source: https://tessa.tech/privacy-policy/
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: >-
+        "Right to delete personal information we have collected from you, subject to certain exceptions. Right to
+        correct inaccurate personal information we maintain about you. ... How to exercise your rights. Submit
+        requests by emailing sales@tessa.tech with the subject line 'California Privacy Request'"
+    note: >-
+      A documented request process with a channel and named rights, framed for California residents; no response
+      period is stated (none is invented here), no dedicated intake page or form (/privacy/requests not present) and
+      no API endpoint. The policy is dated "Effective date: April 29, 2026". Adjacent but not a DSR endpoint: the
+      WordPress askmeagent/v1 namespace exposes /chat/consent, /export and /delete-session routes for the site's
+      chatbot sessions.
+probed_absent:
+- signal: sbom
+  note: No bill of materials published. Never derived — search only.
+- signal: support_lifetime
+  note: No stated support period for the agent surfaces or the WordPress plugin (VF2WP 1.0.0, last updated 2025-08-28 on wordpress.org).
+- signal: accessibility_conformance
+  urls:
+  - {url: 'https://tessa.tech/accessibility-statement/', status: 404}
+  - {url: 'https://tessa.tech/vpat/', status: 404}
+  - {url: 'https://tessa.tech/accessibility/', status: 404}
+  note: >-
+    TESSA sells WCAG 2.2 AA audits and VPAT/ACR deliverables (get_wcag_audit tool; https://tessa.tech/accessibility-audits/
+    is a service page) but publishes no conformance report or accessibility statement for its own properties. A
+    service page is the known false-positive path; not recorded.
+- signal: training_data_summary
+  note: Not published. The site describes AI-powered search/avatars as products; no training-data disclosure.
+- signal: ai_transparency
+  urls:
+  - {url: 'https://tessa.tech/ai/', status: 404}
+  note: >-
+    The privacy policy discloses that message content "including queries typed into our AI-powered search and
+    chatbot tools" is collected, and the agent card / service cards self-identify as AI agents, but there is no
+    dedicated AI-interaction disclosure statement. Not recorded as a signal.
+- signal: subprocessors
+  urls:
+  - {url: 'https://tessa.tech/legal/subprocessors/', status: 404}
+  note: No subprocessor list. The agent host is on Railway and the site on WP Engine behind Cloudflare (observed from headers), but TESSA does not publish that.
+- signal: data_residency
+  note: Not published. Observed edge is US (Railway jfk1); no residency choice.
+- signal: incident_notification
+  note: No DPA and no breach-notification SLA published.
+- signal: age_assurance
+  note: >-
+    The policy states the site "is not directed to children under 13" and that data from a child will be deleted
+    promptly — a COPPA-style statement, not an age-assurance mechanism. Not recorded.
+- signal: notice_and_action
+  note: >-
+    The directory app has takedown and removal flows (REST /takedown, /request-removal with emailed verification) for
+    firms listed from public records, and the Compliance Registry footer says "Firms can claim or remove their
+    listings at any time." This is a listing-removal mechanism for business entities, not a DSA-style
+    notice-and-action channel for illegal content; not recorded, but noted as the closest analogue.
+- signal: transparency_report
+  urls:
+  - {url: 'https://tessa.tech/transparency/', status: 404}
+- signal: exit_assistance
+  note: Not applicable to a services firm's agent surface; nothing published.

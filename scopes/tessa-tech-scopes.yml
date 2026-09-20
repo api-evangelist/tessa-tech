@@ -1,0 +1,27 @@
+generated: '2026-09-19'
+method: searched
+docs: https://tessa.tech/.well-known/oauth-authorization-server
+source: well-known/tessa-tech-oauth-authorization-server.json + well-known/tessa-tech-oauth-protected-resource.json
+note: >-
+  The OpenAPI declares no oauth2 scheme, so 0-working/derive-oauth-scopes.py produced nothing; this file is built
+  from the RFC 8414 / RFC 9728 documents TESSA publishes for its WordPress MCP server. Exactly one scope is
+  advertised and no scope reference page exists, so descriptions are as thin as the source. The anonymous MCP
+  server on aiagent.tessa.tech has no scopes at all.
+schemes:
+  - name: wordpress-mcp-oauth
+    issuer: https://tessa.tech
+    resource: https://tessa.tech/wp-json/mcp/mcp-oauth-server
+    source: well-known/tessa-tech-oauth-authorization-server.json
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://tessa.tech/oauth/authorize
+        tokenUrl: https://tessa.tech/oauth/token
+        pkce: S256
+        client_auth: none (public clients)
+        client_registration: client_id metadata document (client_id_metadata_document_supported true)
+scope_count: 1
+scopes:
+  - scope: mcp
+    description: Sole scope advertised by both the authorization-server metadata (scopes_supported) and the protected-resource metadata; grants access to the WordPress MCP server. No finer-grained read/write split is published.
+    flows: [authorizationCode]
+    sources: [well-known/tessa-tech-oauth-authorization-server.json, well-known/tessa-tech-oauth-protected-resource.json]

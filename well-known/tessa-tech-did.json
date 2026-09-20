@@ -1,0 +1,1 @@
+{"@context":["https://www.w3.org/ns/did/v1"],"id":"did:web:tessa.tech","alsoKnownAs":["https://tessa.tech"],"service":[{"id":"did:web:tessa.tech#agent-card","type":"A2AAgentCard","serviceEndpoint":"https://aiagent.tessa.tech/.well-known/agent-card.json"},{"id":"did:web:tessa.tech#mcp","type":"MCPServer","serviceEndpoint":"https://aiagent.tessa.tech/mcp"}]}

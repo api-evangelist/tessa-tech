@@ -1,0 +1,433 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "get_services",
+        "description": "Returns TESSA's full service catalog (SEO, paid media, web/app development,\n        AI agent readiness, accessibility, and more). Each service includes its live\n        per-service A2A card URL (`agent_card`) and JSON-RPC endpoint (`a2a_endpoint`),\n        so you can discover a service here and then talk to its dedicated A2A agent.\n        Optional filters:\n            category_slug: marketing | web-development | ai-experiences\n            service_slug:  filter to one specific service\n        ",
+        "inputSchema": {
+          "properties": {
+            "category_slug": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Category Slug"
+            },
+            "service_slug": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Service Slug"
+            }
+          },
+          "title": "get_servicesArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "get_case_studies",
+        "description": "Returns TESSA's portfolio of project results.\n\n        Optional filters:\n            industry:     industry name keyword (case-insensitive contains)\n            service_slug: filter to studies that used a given service\n        ",
+        "inputSchema": {
+          "properties": {
+            "industry": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Industry"
+            },
+            "service_slug": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Service Slug"
+            }
+          },
+          "title": "get_case_studiesArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "assess_ai_readiness",
+        "description": "Given a website URL, returns a 0-100 AI Agent Readiness score with\n        category breakdowns (structured data, metadata quality, agent\n        discoverability, AI-bot friendliness) and concrete recommendations.\n        Pure deterministic check, fast, no LLM call.\n        ",
+        "inputSchema": {
+          "properties": {
+            "url": {
+              "title": "Url",
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "title": "assess_ai_readinessArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "find_professional_services_firm",
+        "description": "Search the TESSA Professional Services Directory.\n\n        industry:   segment slug ('marketing' | 'compliance')\n                    or free-text keyword\n        region:     city or state name (case-insensitive contains)\n        capability: keyword to match against firm descriptions and service names\n        limit:      max results\n        ",
+        "inputSchema": {
+          "properties": {
+            "industry": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Industry"
+            },
+            "region": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Region"
+            },
+            "capability": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Capability"
+            },
+            "limit": {
+              "default": 20,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          "title": "find_professional_services_firmArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "get_firm_profile",
+        "description": "Returns the full dossier for a single firm in the directory:\n        description, headquarters, founded year, employee band, services,\n        locations, and directory meta (publisher, claim URL, takedown URL).\n        ",
+        "inputSchema": {
+          "properties": {
+            "slug": {
+              "title": "Slug",
+              "type": "string"
+            }
+          },
+          "required": [
+            "slug"
+          ],
+          "title": "get_firm_profileArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "get_wcag_audit",
+        "description": "Returns the structured offering for TESSA's WCAG 2.2 AA Accessibility\n        Audit: scope, deliverables, timeline, pricing bands (hourly + engagement\n        range), paired service-type slugs, and the URL of TESSA's profile in the\n        TESSA Compliance Registry. Use this when a buyer agent needs TESSA's\n        accessibility audit offering in structured form.\n        ",
+        "inputSchema": {
+          "properties": {},
+          "title": "get_wcag_auditArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "request_strategy_session",
+        "description": "Book a 30-minute strategy session with TESSA on Kevin Callen's\n        calendar. Finds an open slot in the requested window (or the next\n        5 business days), creates a Google Calendar event with a Google Meet\n        link, and emails the prospect the invite. If no slot is available,\n        captures the lead and Kevin follows up manually. TESSA-only tool \u2014\n        directory firms use request_introduction instead.\n\n        requested_window accepts ISO 8601 ranges ('2026-04-30T13:00/2026-04-30T17:00'),\n        single dates ('2026-04-30'), or English ('tomorrow', 'next week').\n        ",
+        "inputSchema": {
+          "properties": {
+            "prospect_email": {
+              "title": "Prospect Email",
+              "type": "string"
+            },
+            "prospect_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Prospect Name"
+            },
+            "prospect_org": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Prospect Org"
+            },
+            "project_brief": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Project Brief"
+            },
+            "requested_window": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Requested Window"
+            }
+          },
+          "required": [
+            "prospect_email"
+          ],
+          "title": "request_strategy_sessionArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "request_introduction",
+        "description": "Request an informational introduction \u2014 to TESSA itself, or to any\n        directory firm if you pass target_firm_slug. TESSA logs the lead and\n        either notifies sales@tessa.tech + kevincallen@tessa.tech (TESSA\n        leads) or forwards a warm intro email to the firm with TESSA Cc'd\n        (directory leads). No calendar booking \u2014 use request_strategy_session\n        to book a meeting with TESSA.\n        ",
+        "inputSchema": {
+          "properties": {
+            "prospect_email": {
+              "title": "Prospect Email",
+              "type": "string"
+            },
+            "prospect_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Prospect Name"
+            },
+            "prospect_org": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Prospect Org"
+            },
+            "project_brief": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Project Brief"
+            },
+            "requested_window": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Requested Window"
+            },
+            "target_firm_slug": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Target Firm Slug"
+            }
+          },
+          "required": [
+            "prospect_email"
+          ],
+          "title": "request_introductionArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "claim_listing",
+        "description": "Record a firm's intent to claim its directory listing.\n\n        Pre-OAuth this does NOT automatically grant control of the listing.\n        TESSA logs the claim and a representative reaches out via email\n        within one business day to verify the claimant and switch the\n        listing's verification status to 'claimed'. The full self-service\n        OAuth-2.1 claim flow lands in a follow-up plan.\n        ",
+        "inputSchema": {
+          "properties": {
+            "firm_slug": {
+              "title": "Firm Slug",
+              "type": "string"
+            },
+            "claim_email": {
+              "title": "Claim Email",
+              "type": "string"
+            },
+            "claimant_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Claimant Name"
+            },
+            "claimant_role": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Claimant Role"
+            }
+          },
+          "required": [
+            "firm_slug",
+            "claim_email"
+          ],
+          "title": "claim_listingArguments",
+          "type": "object"
+        }
+      },
+      {
+        "name": "request_quote",
+        "description": "Request a quote from a directory firm. Lighter-weight than\n        request_introduction \u2014 explicitly framed as a budget+scope inquiry.\n\n        firm_slug:       directory slug for the target firm\n        prospect_email:  caller's email for the firm's reply\n        scope_summary:   one-paragraph description of the work\n        budget_band:     'under_5k' | '5k_25k' | '25k_100k' | '100k_plus' |\n                         'open' \u2014 or any free-text dollar figure\n        ",
+        "inputSchema": {
+          "properties": {
+            "firm_slug": {
+              "title": "Firm Slug",
+              "type": "string"
+            },
+            "prospect_email": {
+              "title": "Prospect Email",
+              "type": "string"
+            },
+            "scope_summary": {
+              "title": "Scope Summary",
+              "type": "string"
+            },
+            "budget_band": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Budget Band"
+            },
+            "prospect_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Prospect Name"
+            },
+            "prospect_org": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Prospect Org"
+            },
+            "requested_window": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Requested Window"
+            }
+          },
+          "required": [
+            "firm_slug",
+            "prospect_email",
+            "scope_summary"
+          ],
+          "title": "request_quoteArguments",
+          "type": "object"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+generated: '2026-09-19'
+method: searched
+source: https://tessa.tech/pricing.md
+sources:
+  - {url: 'https://tessa.tech/pricing.md', status: 200, content_type: text/plain, note: 'Markdown twin of the pricing page, linked from /llms.txt "for agents that prefer it"; saved verbatim to plans/tessa-tech-pricing.md.'}
+  - {url: 'https://tessa.tech/pricing/', status: 200, content_type: text/html}
+checked: '2026-09-19'
+last_updated_stated: '2026-08-26'
+summary: >-
+  TESSA publishes starting prices for its professional SERVICES, not for API access. Every agent surface catalogued in
+  this repo — the A2A agent, the MCP server, the agent directory REST API, the agent card fleet — is free and
+  anonymous; there is no API plan, quota, overage or paid tier anywhere. The prices below are what the agent's
+  get_services / request_quote tools are about: monthly retainers and one-off projects, in USD, "starting points"
+  customised per business. Recorded because a buyer agent calling this provider needs the commercial context, and
+  because the provider went to the trouble of publishing it as Markdown for agents.
+api_access:
+  price: free
+  auth: none
+  quota: not stated
+  note: No plan governs the REST, MCP or A2A surfaces; nothing on the pricing page mentions them.
+plan_count: 0
+service_price_count: 17
+currency: USD
+prices_published: true
+pricing_model: services (retainers, subscriptions, one-time projects); "customized per business; the figures below are starting points"
+plans: []
+services:
+  - {category: Marketing, name: Search Engine Optimization (SEO), model: Monthly retainer, starting_price: 1850, period: month, includes: [technical SEO, on-page optimization, content recommendations, monthly reporting]}
+  - {category: Marketing, name: Local SEO, model: Monthly retainer, starting_price: 1850, period: month}
+  - {category: Marketing, name: National / International SEO, model: Monthly retainer, starting_price: 1850, period: month}
+  - {category: Marketing, name: Online Brand Protection and Countermeasures, model: Monthly retainer, starting_price: 2500, period: month}
+  - {category: Marketing, name: Review Management Platform, model: Monthly subscription, starting_price: 100, period: month}
+  - {category: Marketing, name: Search Engine Marketing / Paid Search & Social Ads, model: Monthly management fee (+ ad spend), starting_price: 1500, period: month, note: plus ad spend}
+  - {category: Marketing, name: PPC (Pay-Per-Click), model: Monthly management fee (+ ad spend), starting_price: 1500, period: month, note: plus ad spend}
+  - {category: Marketing, name: Social Media Ads, model: Monthly management fee (+ ad spend), starting_price: 1500, period: month, note: plus ad spend}
+  - {category: Marketing, name: Display and Retargeting Ads, model: Monthly management fee (+ ad spend), starting_price: 500, period: month, note: plus ad spend}
+  - {category: Marketing, name: Google Ad Grants for Nonprofits, model: Monthly management fee, starting_price: 750, period: month}
+  - {category: Marketing, name: Generative Engine Optimization (GEO), model: Monthly retainer, starting_price: 1850, period: month}
+  - {category: Technology, name: Website Design, model: One-time project, starting_price: 5000, period: project}
+  - {category: Technology, name: Website Development, model: One-time project, starting_price: 5000, period: project}
+  - {category: Technology, name: AI Agent Readiness, model: Quoted per engagement, starting_price: null, period: null, note: '"quoted after a scoping call"; includes five-layer readiness audit, llms.txt / structured-data setup, fix recommendations, re-scan'}
+  - {category: Technology, name: AI Search, model: Annual subscription, starting_price: 500, period: year}
+  - {category: Technology, name: Interactive AI Avatars, model: Setup + monthly subscription, starting_price: 2000, period: setup, note: '+ $250 /month'}
+  - {category: Technology, name: WCAG Web Accessibility, model: One-time project (+ optional monitoring), starting_price: 5000, period: project}
+discrepancy_note: >-
+  The per-service A2A card for SEO (https://aiagent.tessa.tech/s/seo/agent-card.json) states "Starting price:
+  $1,950/mo + setup" while pricing.md (last updated 2026-08-26) says $1850 /month. Both are TESSA's own documents;
+  recorded as published, not reconciled.
+contact: sales@tessa.tech
+quote_url: https://tessa.tech/about/get-a-strategy/

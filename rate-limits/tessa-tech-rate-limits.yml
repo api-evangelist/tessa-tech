@@ -1,0 +1,27 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  No published rate-limit documentation exists for any TESSA surface (searched tessa.tech, the agent host's root
+  document, /docs, the OpenAPI, the agent card, server.json and llms.txt). The only data are live observations from
+  this pass on 2026-09-19.
+checked: '2026-09-19'
+limit_count: 0
+documented: false
+headers_documented: []
+observed:
+  - host: tessa.tech (WordPress apex behind Cloudflare / WP Engine)
+    surface: website, OAuth discovery, llms.txt
+    status_on_exhaustion: 429
+    body: 'Cloudflare challenge page ("Just a moment...", text/html, ~5.7 KB, CSP allowing challenges.cloudflare.com)'
+    trigger: 'Roughly the 40th request in a fast sequence (the www.tessa.tech probe pass, whose every path redirected to the apex a second time).'
+    headers: 'No RateLimit-*, X-RateLimit-* or Retry-After observed.'
+    recovery: 'A paced re-probe (1.5 s spacing, 14 requests) a few minutes later returned normal 200/404 responses.'
+    note: This is an edge bot-challenge, not an API quota; it affects the discovery documents on the apex but not the agent surfaces.
+  - host: aiagent.tessa.tech (FastAPI on Railway)
+    surface: REST, MCP, A2A, agent cards
+    status_on_exhaustion: not observed
+    note: '~60 requests including the MCP handshake and tools/list produced no 429 and no rate-limit headers. Response headers carry x-railway-request-id / x-railway-edge only.'
+scopes: []
+agent_guidance: >-
+  Treat the agent host as unthrottled-but-undocumented and self-limit; treat the apex as Cloudflare-fronted and space
+  discovery fetches. Because no Retry-After is served anywhere, back off exponentially on any 429.

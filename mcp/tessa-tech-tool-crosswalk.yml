@@ -1,0 +1,159 @@
+generated: '2026-09-19'
+method: derived
+source: >-
+  Derived by aligning the live MCP tools/list (mcp/tessa-tech-mcp-tools-list.json, 10 tools with inputSchema,
+  fetched anonymously 2026-09-19) and the A2A agent card's nine skills (a2a/tessa-tech-agent-card.json) with the
+  51 operations in the provider's OpenAPI (openapi/tessa-tech-agent-directory-openapi.yml; verbatim source in
+  openapi/_original/tessa-tech-openapi.json). Confidence per row; nothing mapped that does not exist.
+purpose: >-
+  Bind each agent-facing tool to the REST operation that backs it so the tool inherits a real request contract,
+  and record where the surfaces diverge. TESSA's three surfaces are projections of one FastAPI service: the MCP
+  tools are the richest projection (the only one with published inputSchema), the A2A skills mirror nine of the
+  ten tools, and the REST OpenAPI exposes the directory's firm/claim/verify/removal/takedown plumbing that the
+  tools sit on — while the four catalog/assessment tools have no public REST route at all.
+surfaces:
+  rest_openapi: openapi/tessa-tech-agent-directory-openapi.yml     # 51 operations, 48 paths; no securitySchemes; registry routes 421 on aiagent, live on complianceregistry.net / marketingregistry.org
+  mcp: https://aiagent.tessa.tech/mcp/                                 # Streamable HTTP, anonymous; tools/list NOT gated — schemas below are real
+  a2a: https://aiagent.tessa.tech                                      # JSON-RPC (also /a2a); nine skills; card at /.well-known/agent-card.json
+  mcp_gated: https://tessa.tech/wp-json/mcp/mcp-oauth-server          # WordPress MCP, OAuth 2.1 scope "mcp"; tools unknown, not mapped
+
+# Each MCP tool -> the REST operationId(s) that back it, plus the A2A skill id that mirrors it.
+crosswalk:
+  - tool: get_firm_profile
+    category: directory
+    a2a_skill: null
+    rest: [firm_profile__slug__profile_json_get, firm_card__slug__agent_card_json_get]
+    binding: rest
+    confidence: high
+    note: >-
+      Tool input {slug} = the REST path parameter {slug}; the tool description ("full dossier ... directory meta
+      (publisher, claim URL, takedown URL)") matches /{slug}/profile.json. The per-firm agent card at
+      /{slug}/agent-card.json is the same record in A2A form. Both routes are host-scoped to the registry hosts.
+  - tool: request_introduction
+    category: lead
+    a2a_skill: request-introduction
+    rest: [firm_request_introduction__slug__request_introduction_post]
+    binding: rest
+    confidence: high
+    note: >-
+      When target_firm_slug is supplied the tool is POST /{slug}/request-introduction. Without it the tool routes
+      the lead to TESSA itself, for which no public REST route exists (server-side path) — so the binding is
+      exact for directory leads and partial for TESSA leads.
+  - tool: claim_listing
+    category: directory
+    a2a_skill: claim-listing
+    rest: [firm_claim_stub__slug__claim_get, verify_submit_verify_listing_post, verify_confirm_verify_listing_confirm__token__get]
+    binding: rest
+    confidence: medium
+    note: >-
+      /{slug}/claim is a GET "claim stub" landing (the operationId says stub, as does the tool text: "Pre-OAuth this
+      does NOT automatically grant control"). The email-verification loop the tool describes matches the
+      /verify-listing form + /verify-listing/confirm/{token} pair. Same intent, different mechanics — the tool
+      records a claim, the REST routes render forms and confirm tokens.
+  - tool: find_professional_services_firm
+    category: directory
+    a2a_skill: find-professional-services-firm
+    rest: [registry_index_registry_json_get, registry_jsonrpc_registry_jsonrpc_post]
+    binding: rest
+    confidence: medium
+    note: >-
+      The directory index is /registry.json (a static A2A registry index per host; complianceregistry.net returned
+      8,400 bytes, marketingregistry.org 847 bytes) and there is a /registry/jsonrpc route. The tool's filters
+      (industry, region, capability, limit) are applied server-side across ALL registries TESSA operates; no REST
+      operation exposes those query parameters, so the tool is the only filtered search surface.
+  - tool: request_quote
+    category: lead
+    a2a_skill: request-quote
+    rest: []
+    binding: none
+    confidence: high
+    note: No public REST route. The tool text says it "records the request to directory_leads and forwards a structured email" — a server-side write with no OpenAPI operation. inputSchema (firm_slug, prospect_email, scope_summary required; budget_band enum-ish) is the only contract.
+  - tool: request_strategy_session
+    category: lead
+    a2a_skill: request-strategy-session
+    rest: []
+    binding: none
+    confidence: high
+    note: No public REST route. Creates a Google Calendar event + Meet link and emails the prospect. inputSchema requires prospect_email only.
+  - tool: get_services
+    category: catalog
+    a2a_skill: tessa-services
+    rest: []
+    binding: none
+    confidence: high
+    note: >-
+      No REST catalog operation. The nearest REST surface is the service-card fleet — /s (JSON index of 28 service
+      cards, not in the OpenAPI) and service_agent_card_s__slug__agent_card_json_get — which the tool's response
+      links to ("each service includes its live per-service A2A card URL and JSON-RPC endpoint").
+  - tool: get_case_studies
+    category: catalog
+    a2a_skill: tessa-case-studies
+    rest: []
+    binding: none
+    confidence: high
+    note: No REST route. The human twin is https://tessa.tech/casestudies/ on the WordPress apex.
+  - tool: get_wcag_audit
+    category: catalog
+    a2a_skill: get-wcag-audit
+    rest: []
+    binding: none
+    confidence: high
+    note: No REST route; zero-argument tool returning a structured offering.
+  - tool: assess_ai_readiness
+    category: assessment
+    a2a_skill: ai-readiness-assessment
+    rest: []
+    binding: none
+    confidence: high
+    note: No REST route. Tool text says "pure deterministic check, fast, no LLM call"; the human twin is the /ai-agent-readiness/ service page.
+
+mcp_only:
+  - tool: request_quote
+    reason: Server-side lead write; no OpenAPI operation.
+  - tool: request_strategy_session
+    reason: Calendar/Meet booking composite; no OpenAPI operation.
+  - tool: get_services
+    reason: Catalog read with no REST endpoint (the /s index and per-service cards are A2A artefacts, not a REST catalog).
+  - tool: get_case_studies
+    reason: Catalog read with no REST endpoint.
+  - tool: get_wcag_audit
+    reason: Catalog read with no REST endpoint.
+  - tool: assess_ai_readiness
+    reason: Assessment composite with no REST endpoint.
+
+a2a_only:
+  - note: None. Every A2A skill has a same-named MCP tool; the A2A card is the narrower projection (9 of 10 tools).
+
+rest_only:
+  - capability: A2A transport plumbing
+    operations: [a2a_endpoint_a2a_post, tenant_a2a_endpoint_t__slug__a2a_post, tenant_service_a2a_endpoint_t__slug__s__service_slug__a2a_post, service_a2a_endpoint_s__slug__a2a_post]
+  - capability: Agent-card and discovery documents
+    operations: [well_known_agent_card__well_known_agent_card_json_get, well_known_did_document__well_known_did_json_get, mcp_server_manifest__well_known_mcp_server_json_get, tenant_agent_card_t__slug__agent_card_json_get, tenant_service_agent_card_t__slug__s__service_slug__agent_card_json_get, service_agent_card_s__slug__agent_card_json_get, firm_card__slug__agent_card_json_get, robots_robots_txt_get]
+  - capability: Listing lifecycle forms (takedown / removal / verification)
+    operations: [takedown_form_takedown_get, takedown_submit_takedown_post, removal_form_request_removal_get, removal_submit_request_removal_post, removal_verify_request_removal_verify__token__get, verify_form_verify_listing_get]
+  - capability: A2A extension + taxonomies (registry hosts)
+    operations: [extensions_index_extensions__get, extension_spec_page_extensions_tessa_professional_services_v1__get, extension_spec_page_extensions_tessa_professional_services_v1_get, extension_schema_extensions_tessa_professional_services_v1_schema_json_get, extension_example_extensions_tessa_professional_services_v1_example_json_get, extension_changelog_extensions_tessa_professional_services_v1_changelog_get, taxonomy_index_taxonomy_get, taxonomy_index_taxonomy__get, taxonomy_json_taxonomy__name__json_get, taxonomy_versioned_taxonomy__name__v_version__get, taxonomy_no_suffix_taxonomy__name__get]
+  - capability: Assistant landing pages
+    operations: [claude_landing_claude_get, chatgpt_landing_chatgpt_get, gemini_landing_gemini_get]
+  - capability: Vector store (operator surface)
+    operations: [vectors_health_vectors_health_get, vectors_info_vectors_info_get, vectors_search_vectors_search_post, vectors_upsert_vectors_upsert_post, vectors_delete_vectors_delete_post]
+    note: /vectors/info answered 422 (missing `collection` query) anonymously; whether search/upsert/delete are gated was not tested (no write was attempted).
+  - capability: Admin / internal (token-gated)
+    operations: [admin_requests_admin_requests_get, admin_first_hit_admin_first_hit_get, internal_visibility_internal_visibility_get, internal_visibility_json_internal_visibility_json_get]
+    note: Both /admin/requests and /internal/visibility.json answered 401 {"detail":"Invalid or missing admin token"} — an admin token the OpenAPI does not declare (no securitySchemes).
+  - capability: Landing / health
+    operations: [registry_home__get, firm_landing__slug__get, healthz_healthz_get]
+
+coverage:
+  mcp_tools: 10
+  mcp_tools_bound_to_rest: 4
+  mcp_only: 6
+  a2a_skills: 9
+  a2a_skills_with_mcp_tool: 9
+  rest_operations: 51
+  rest_operations_with_tool: 7
+  rest_only_operations: 44
+  note: >-
+    The MCP inputSchemas are published and were captured, so no tool contract is inferred. The 6 MCP-only tools are
+    the ones a buyer agent actually uses (catalog, assessment, quote, booking); the REST surface is mostly the
+    registry's own plumbing. An agent that wants TESSA's commercial surface should use MCP or A2A, not REST.

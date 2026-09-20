@@ -64,5 +64,11 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-TESSA Marketing & Technology is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry) and added to the network as a stub for full-pipeline profiling.
-- https://tessa.tech/
+TESSA Marketing & Technology is a McLean, Virginia digital marketing and web development agency (est. 2012) that publishes an unusually complete agent surface for a services firm: an A2A agent card and JSON-RPC endpoint on `aiagent.tessa.tech` (nine skills, graded conformant), an anonymous hosted MCP server with ten tools and published input schemas, a 28-card per-service A2A fleet, a FastAPI OpenAPI for the professional-services directory behind it, RFC 8414/9728 OAuth discovery for a second, OAuth 2.1-gated WordPress MCP server on the apex, `llms.txt`, a Markdown pricing twin and an AI-welcoming `robots.txt`. It also operates two vertical A2A registries, complianceregistry.net and marketingregistry.org, on the same application. Surfaced via the a2a-registry harvest (a2aregistry.org) and profiled 2026-09-19.
+
+- Website: https://tessa.tech/
+- Agent card: https://aiagent.tessa.tech/.well-known/agent-card.json
+- MCP server: https://aiagent.tessa.tech/mcp/ (Streamable HTTP)
+- OpenAPI: https://aiagent.tessa.tech/openapi.json (local copy under `openapi/`)
+
+Artifacts in this repository: `openapi/`, `a2a/`, `mcp/` (manifest, live tools/list, tool crosswalk), `well-known/`, `llms/`, `authentication/`, `scopes/`, `conformance/`, `conventions/`, `errors/`, `lifecycle/`, `changelog/`, `data-model/`, `overlays/`, `skills/`, `agentic-access/`, `security/`, `regulatory/`, `plans/`, `rate-limits/`, `packages/`.

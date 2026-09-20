@@ -1,0 +1,371 @@
+generated: '2026-09-19'
+method: probed
+status: published
+source: https://aiagent.tessa.tech/mcp/ (initialize + tools/list, 2026-09-19) + https://aiagent.tessa.tech/.well-known/mcp/server.json
+  + https://aiagent.tessa.tech/ (root document)
+summary: 'TESSA Marketing & Technology runs a hosted, anonymous MCP server on its own agent host: Streamable HTTP
+  at https://aiagent.tessa.tech/mcp/, serverInfo name tessa-mcp-server version 1.30.0, protocolVersion 2025-06-18,
+  ten tools, no resources and no prompts. It is advertised three ways from the same host — an MCP server.json at
+  /.well-known/mcp/server.json (2025-12-11 registry schema, remotes[] streamable-http), the did:web document''s
+  MCPServer service entry, and the root document''s mcp_endpoint field — and the A2A agent card''s nine skills map
+  one-to-one onto nine of the ten tools. A second, separate MCP server runs on the WordPress apex behind OAuth 2.1
+  and could not be introspected anonymously; it is recorded below as gated.'
+server:
+  name: tessa-mcp-server
+  title: TESSA Marketing & Technology
+  registry_name: tech.tessa/tessa-mcp-server
+  transport: streamable-http
+  url: https://aiagent.tessa.tech/mcp/
+  server_info:
+    name: tessa-mcp-server
+    version: 1.30.0
+  server_json_version: 1.0.1
+  protocol_version: '2025-06-18'
+  capabilities:
+    tools:
+      listChanged: false
+    resources:
+      subscribe: false
+      listChanged: false
+    prompts:
+      listChanged: false
+    experimental: {}
+  manifest: well-known/tessa-tech-mcp-server.json
+  did_document: well-known/tessa-tech-did.json
+  hosting: 'Railway (server: railway-hikari; x-railway-request-id on every response)'
+  listings:
+  - a2aregistry.org (as the A2A agent, which advertises this MCP server in its skill text)
+deployment:
+  mode: remote
+  endpoint: https://aiagent.tessa.tech/mcp/
+  auth: none
+  verified: probed
+  checked: '2026-09-19'
+  probe:
+    note: 'Session-based Streamable HTTP. A bare POST tools/list returns 400 {"error":{"code":-32600,"message":"Bad
+      Request: Missing session ID"}}; a POST without Accept: text/event-stream returns 406 -32600 "Client must accept
+      text/event-stream". After initialize (200, text/event-stream, mcp-session-id header issued) and notifications/initialized,
+      tools/list returned 200 with ten tools and full inputSchema objects — no credential was sent at any step.'
+    requests:
+    - method: initialize
+      http_status: 200
+      content_type: text/event-stream
+      session_header: mcp-session-id
+    - method: tools/list
+      http_status: 200
+      tools: 10
+      saved: mcp/tessa-tech-mcp-tools-list.json
+    - method: resources/list
+      http_status: 200
+      resources: 0
+    - method: prompts/list
+      http_status: 200
+      prompts: 0
+    no_side_effects: Only initialize, notifications/initialized, tools/list, resources/list and prompts/list were
+      issued. No tools/call. No lead, booking, claim or quote was created.
+auth:
+  methods:
+  - none
+  note: Anonymous. No WWW-Authenticate challenge, no RFC 9728 protected-resource metadata on aiagent.tessa.tech
+    (/.well-known/oauth-protected-resource 404). The four lead-creating tools rely on the caller-supplied prospect_email
+    as the only identity signal.
+tool_count: 10
+tools:
+- name: get_services
+  category: catalog
+  description: 'Returns TESSA''s full service catalog (SEO, paid media, web/app development, AI agent readiness,
+    accessibility, and more). Each service includes its live per-service A2A card URL (`agent_card`) and JSON-RPC
+    endpoint (`a2a_endpoint`), so you can discover a service here and then talk to its dedicated A2A agent. Optional
+    filters: category_slug: marketing | web-development | ai-experiences service_slug: filter to one specific service'
+  input_schema:
+    required: []
+    properties:
+      category_slug:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      service_slug:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+  side_effects: none (read-only)
+  a2a_skill: tessa-services
+- name: get_case_studies
+  category: catalog
+  description: 'Returns TESSA''s portfolio of project results. Optional filters: industry: industry name keyword
+    (case-insensitive contains) service_slug: filter to studies that used a given service'
+  input_schema:
+    required: []
+    properties:
+      industry:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      service_slug:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+  side_effects: none (read-only)
+  a2a_skill: tessa-case-studies
+- name: assess_ai_readiness
+  category: assessment
+  description: Given a website URL, returns a 0-100 AI Agent Readiness score with category breakdowns (structured
+    data, metadata quality, agent discoverability, AI-bot friendliness) and concrete recommendations. Pure deterministic
+    check, fast, no LLM call.
+  input_schema:
+    required:
+    - url
+    properties:
+      url:
+        type: string
+  side_effects: none (read-only)
+  a2a_skill: ai-readiness-assessment
+- name: find_professional_services_firm
+  category: directory
+  description: 'Search the TESSA Professional Services Directory. industry: segment slug (''marketing'' | ''compliance'')
+    or free-text keyword region: city or state name (case-insensitive contains) capability: keyword to match against
+    firm descriptions and service names limit: max results'
+  input_schema:
+    required: []
+    properties:
+      industry:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      region:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      capability:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      limit:
+        default: 20
+        type: integer
+  side_effects: none (read-only)
+  a2a_skill: find-professional-services-firm
+- name: get_firm_profile
+  category: directory
+  description: 'Returns the full dossier for a single firm in the directory: description, headquarters, founded
+    year, employee band, services, locations, and directory meta (publisher, claim URL, takedown URL).'
+  input_schema:
+    required:
+    - slug
+    properties:
+      slug:
+        type: string
+  side_effects: none (read-only)
+  a2a_skill: null
+  note: 'MCP-only: no A2A skill; backed by the REST firm profile route (see the crosswalk).'
+- name: get_wcag_audit
+  category: catalog
+  description: 'Returns the structured offering for TESSA''s WCAG 2.2 AA Accessibility Audit: scope, deliverables,
+    timeline, pricing bands (hourly + engagement range), paired service-type slugs, and the URL of TESSA''s profile
+    in the TESSA Compliance Registry. Use this when a buyer agent needs TESSA''s accessibility audit offering in
+    structured form.'
+  input_schema:
+    required: []
+    properties: {}
+  side_effects: none (read-only)
+  a2a_skill: get-wcag-audit
+- name: request_strategy_session
+  category: lead
+  description: Book a 30-minute strategy session with TESSA on Kevin Callen's calendar. Finds an open slot in the
+    requested window (or the next 5 business days), creates a Google Calendar event with a Google Meet link, and
+    emails the prospect the invite. If no slot is available, captures the lead and Kevin follows up manually. TESSA-only
+    tool — directory firms use request_introduction instead. requested_window accepts ISO 8601 ranges ('2026-04-30T13:00/2026-04-30T17:00'),
+    single dates ('2026-04-30'), or English ('tomorrow', 'next week').
+  input_schema:
+    required:
+    - prospect_email
+    properties:
+      prospect_email:
+        type: string
+      prospect_name:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      prospect_org:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      project_brief:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      requested_window:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+  side_effects: Creates a Google Calendar event with a Google Meet link on Kevin Callen's calendar and emails the
+    prospect; falls back to capturing a lead when no slot is free.
+  a2a_skill: request-strategy-session
+- name: request_introduction
+  category: lead
+  description: Request an informational introduction — to TESSA itself, or to any directory firm if you pass target_firm_slug.
+    TESSA logs the lead and either notifies sales@tessa.tech + kevincallen@tessa.tech (TESSA leads) or forwards
+    a warm intro email to the firm with TESSA Cc'd (directory leads). No calendar booking — use request_strategy_session
+    to book a meeting with TESSA.
+  input_schema:
+    required:
+    - prospect_email
+    properties:
+      prospect_email:
+        type: string
+      prospect_name:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      prospect_org:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      project_brief:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      requested_window:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      target_firm_slug:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+  side_effects: Logs a lead; notifies sales@tessa.tech + kevincallen@tessa.tech (TESSA leads) or forwards a warm
+    intro email to the target firm with TESSA Cc'd.
+  a2a_skill: request-introduction
+- name: claim_listing
+  category: directory
+  description: Record a firm's intent to claim its directory listing. Pre-OAuth this does NOT automatically grant
+    control of the listing. TESSA logs the claim and a representative reaches out via email within one business
+    day to verify the claimant and switch the listing's verification status to 'claimed'. The full self-service
+    OAuth-2.1 claim flow lands in a follow-up plan.
+  input_schema:
+    required:
+    - firm_slug
+    - claim_email
+    properties:
+      firm_slug:
+        type: string
+      claim_email:
+        type: string
+      claimant_name:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      claimant_role:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+  side_effects: Logs a claim intent; a representative verifies by email within one business day. Does NOT grant
+    listing control (pre-OAuth stub, per the tool description).
+  a2a_skill: claim-listing
+- name: request_quote
+  category: lead
+  description: 'Request a quote from a directory firm. Lighter-weight than request_introduction — explicitly framed
+    as a budget+scope inquiry. firm_slug: directory slug for the target firm prospect_email: caller''s email for
+    the firm''s reply scope_summary: one-paragraph description of the work budget_band: ''under_5k'' | ''5k_25k''
+    | ''25k_100k'' | ''100k_plus'' | ''open'' — or any free-text dollar figure'
+  input_schema:
+    required:
+    - firm_slug
+    - prospect_email
+    - scope_summary
+    properties:
+      firm_slug:
+        type: string
+      prospect_email:
+        type: string
+      scope_summary:
+        type: string
+      budget_band:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      prospect_name:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      prospect_org:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+      requested_window:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+  side_effects: Records the request to directory_leads and emails the firm with the prospect's reply-to address.
+  a2a_skill: request-quote
+resources: []
+prompts: []
+additional_servers:
+- name: WordPress MCP (mcp-oauth-server)
+  host: tessa.tech
+  url: https://tessa.tech/wp-json/mcp/mcp-oauth-server
+  transport: http (WordPress REST route, methods POST/GET/DELETE)
+  deployment:
+    mode: remote
+    endpoint: https://tessa.tech/wp-json/mcp/mcp-oauth-server
+    auth: oauth
+    verified: probed
+    probe: gated
+  auth:
+    methods:
+    - oauth2
+    oauth2:
+      issuer: https://tessa.tech
+      authorization_endpoint: https://tessa.tech/oauth/authorize
+      token_endpoint: https://tessa.tech/oauth/token
+      revocation_endpoint: https://tessa.tech/oauth/revoke
+      grant_types:
+      - authorization_code
+      - refresh_token
+      pkce: S256
+      scopes_supported:
+      - mcp
+      token_endpoint_auth_methods_supported:
+      - none
+      client_id_metadata_document_supported: true
+      discovery: well-known/tessa-tech-oauth-authorization-server.json
+      protected_resource_metadata: well-known/tessa-tech-oauth-protected-resource.json
+  probe:
+    tools_list_anonymous:
+      http_status: 401
+      body: '{"code":"mcp_unauthorized","message":"MCP authentication required.","data":{"status":401}}'
+    www_authenticate: absent (the 401 body carries the challenge; no WWW-Authenticate header with resource_metadata
+      was returned, so an MCP client must find the RFC 9728 document by convention at /.well-known/oauth-protected-resource)
+  tools: unknown — tools/list is OAuth-gated; input schemas require authenticated introspection. Not derived.
+  note: The WordPress REST index lists namespace 'mcp' with routes /mcp/mcp-oauth-server and /mcp/mcp-adapter-default-server
+    (the latter answers 401 rest_forbidden), alongside a 'wp-abilities/v1' namespace — the WordPress MCP Adapter
+    / Abilities API stack. This is the resource the apex's RFC 9728 document names.
+- name: Registry-host mounts of the same server
+  urls:
+  - https://complianceregistry.net/mcp/
+  - https://marketingregistry.org/mcp/
+  note: The Compliance Registry agent card (https://complianceregistry.net/.well-known/agent-card.json, provider
+    TESSA) states 'Powered by TESSA's MCP server, served via Streamable HTTP at /mcp/' and both registry hosts serve
+    the byte-identical OpenAPI. Not introspected in this pass; recorded as declared by the provider.

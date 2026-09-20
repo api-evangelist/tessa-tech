@@ -1,0 +1,37 @@
+generated: '2026-09-19'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: tessa.tech
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov  5 09:44:52 2026 GMT
+  hsts: false
+- host: aiagent.tessa.tech
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 25 17:51:54 2026 GMT
+  hsts: null
+- host: complianceregistry.net
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 18 18:22:48 2026 GMT
+  hsts: null
+domains:
+- domain: tessa.tech
+  dnssec: false
+  caa:
+  - 0 issuewild "letsencrypt.org"
+  - 0 issuewild "pki.goog; cansignhttpexchanges=yes"
+  - 0 issuewild "ssl.com"
+  - 0 issue "comodoca.com"
+  - 0 issue "digicert.com; cansignhttpexchanges=yes"
+  - 0 issue "letsencrypt.org"
+  spf: true
+  dmarc: true
+  dmarc_policy: none
+- domain: complianceregistry.net
+  dnssec: true
+  caa: []
+  spf: false
+  dmarc: false

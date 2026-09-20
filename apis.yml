@@ -1,23 +1,202 @@
 aid: tessa-tech
 name: TESSA Marketing & Technology
-description: 'TESSA Marketing & Technology is a company surfaced via the API Evangelist harvest backlog
-  (source: a2a-registry) and added to the network as a stub for full-pipeline profiling.'
+description: 'TESSA Marketing & Technology is a McLean, Virginia digital marketing and web development agency (est.
+  2012) selling SEO, paid search and social advertising, generative engine optimization, WordPress and custom web/app
+  development, WCAG 2.2 AA accessibility audits, AI website search and avatars, and an AI Agent Readiness service.
+  It publishes an unusually complete agent surface for a services firm: an A2A agent card (protocolVersion 0.3.0,
+  nine skills) and JSON-RPC endpoint on aiagent.tessa.tech, an anonymous hosted MCP server (Streamable HTTP, ten
+  tools with published inputSchema) advertised through an MCP server.json and a did:web document, a 28-card per-service
+  A2A fleet, a FastAPI OpenAPI for the directory service behind it, RFC 8414/9728 OAuth discovery for a second OAuth
+  2.1-gated WordPress MCP server, llms.txt, a Markdown pricing twin, and an AI-welcoming robots.txt. TESSA also
+  operates two vertical A2A registries, complianceregistry.net and marketingregistry.org.'
 url: https://raw.githubusercontent.com/api-evangelist/tessa-tech/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:a2a-registry
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-09-19 (was stub/harvest)
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
 tags:
+- Digital Marketing
+- SEO
+- Web Development
+- Accessibility
+- AI Agent Readiness
+- Professional Services
+- Agent Directory
+- A2A
+- MCP
+- agent-native
 - Company
-apis: []
+apis:
+- name: TESSA Agent Directory API
+  description: 'FastAPI service behind aiagent.tessa.tech: the A2A agent card and JSON-RPC endpoint, per-service
+    and per-tenant agent cards, the professional-services directory (firm cards and profiles, introduction requests,
+    claim / verify / removal / takedown flows), the TESSA Professional Services A2A extension and service-type taxonomies,
+    and an admin/vector surface. 51 operations, OpenAPI 3.1.0, no securitySchemes declared (admin routes answer
+    401 on a token the spec does not describe). The same application serves complianceregistry.net and marketingregistry.org;
+    registry-scoped routes return 421 on aiagent.tessa.tech.'
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Agent Directory
+  - Professional Services
+  - A2A
+  - Accessibility
+  - Digital Marketing
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-agent-directory-openapi.yml
+  - type: OpenAPI
+    name: OpenAPI (provider-hosted)
+    url: https://aiagent.tessa.tech/openapi.json
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+  - type: Overlay
+    url: overlays/tessa-tech-agent-directory-overlay.yaml
+- name: TESSA MCP Server
+  description: 'Hosted, anonymous MCP server (Streamable HTTP at https://aiagent.tessa.tech/mcp/, serverInfo tessa-mcp-server
+    1.30.0, protocolVersion 2025-06-18) exposing ten tools: TESSA''s service catalog, case studies and WCAG audit
+    offering, an AI Agent Readiness assessment for any URL, professional-services directory search and firm profiles,
+    and four lead-creating tools (strategy-session booking, introduction, quote, listing claim). Advertised by /.well-known/mcp/server.json
+    and the did:web document. A second MCP server on the WordPress apex (https://tessa.tech/wp-json/mcp/mcp-oauth-server)
+    is OAuth 2.1-gated with RFC 8414/9728 discovery published on tessa.tech.'
+  humanURL: https://aiagent.tessa.tech/
+  baseURL: https://aiagent.tessa.tech/mcp/
+  tags:
+  - MCP
+  - agent-native
+  - Professional Services
+  - AI Agent Readiness
+  - Digital Marketing
+  properties:
+  - type: MCPServer
+    url: mcp/tessa-tech-mcp.yml
+  - type: MCPServer
+    name: MCP endpoint (Streamable HTTP)
+    url: https://aiagent.tessa.tech/mcp/
+  - type: ToolCrosswalk
+    url: mcp/tessa-tech-tool-crosswalk.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/
+  - type: OAuthScopes
+    url: scopes/tessa-tech-scopes.yml
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+- name: TESSA A2A Agent
+  description: A2A agent (protocolVersion 0.3.0, JSONRPC) for TESSA Marketing & Technology with nine skills — services
+    catalog, case studies, AI agent readiness assessment, professional-services firm search, WCAG audit offering,
+    strategy-session booking, introduction, listing claim and quote requests — plus a fleet of 28 per-service agent
+    cards under /s/{slug}/agent-card.json and per-tenant cards under /t/{slug}/. Card graded conformant against
+    A2A 1.0.0 hard checks; no securitySchemes declared.
+  humanURL: https://aiagent.tessa.tech/.well-known/agent-card.json
+  baseURL: https://aiagent.tessa.tech/a2a
+  tags:
+  - A2A
+  - agent-native
+  - Professional Services
+  - Digital Marketing
+  - Agent Directory
+  properties:
+  - type: AgentCard
+    url: a2a/tessa-tech-a2a.yml
+  - type: AgentCard
+    name: Agent card (provider-hosted)
+    url: https://aiagent.tessa.tech/.well-known/agent-card.json
+  - type: Documentation
+    url: https://aiagent.tessa.tech/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/tessa-tech-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/tessa-tech-agentic-access.yml
 - type: Website
   url: https://tessa.tech/
+- type: Blog
+  url: https://tessa.tech/blog/
+- type: BlogRSS
+  url: https://tessa.tech/feed/
+- type: Pricing
+  url: https://tessa.tech/pricing/
+- type: PrivacyPolicy
+  url: https://tessa.tech/privacy-policy/
+- type: Contact
+  url: https://tessa.tech/about/contact-us/
+- type: About
+  url: https://tessa.tech/about/
+- type: Leadership
+  url: https://tessa.tech/team/
+- type: CaseStudies
+  url: https://tessa.tech/casestudies/
+- type: Documentation
+  url: https://aiagent.tessa.tech/docs
+- type: APIReference
+  url: https://aiagent.tessa.tech/redoc
+- type: LLMsTxt
+  url: llms/tessa-tech-llms.txt
+- type: LLMsTxt
+  name: llms.txt (provider-hosted)
+  url: https://tessa.tech/llms.txt
+- type: AgentCard
+  url: a2a/tessa-tech-a2a.yml
+- type: MCPServer
+  url: mcp/tessa-tech-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/tessa-tech-tool-crosswalk.yml
+- type: WellKnown
+  url: well-known/tessa-tech-well-known.yml
+- type: Authentication
+  url: authentication/tessa-tech-authentication.yml
+- type: OAuthScopes
+  url: scopes/tessa-tech-scopes.yml
+- type: Conventions
+  url: conventions/tessa-tech-conventions.yml
+- type: Lifecycle
+  url: lifecycle/tessa-tech-lifecycle.yml
+- type: Conformance
+  url: conformance/tessa-tech-conformance.yml
+- type: ErrorCatalog
+  url: errors/tessa-tech-problem-types.yml
+- type: DataModel
+  url: data-model/tessa-tech-data-model.yml
+- type: Overlay
+  url: overlays/tessa-tech-agent-directory-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Packages
+  url: packages/tessa-tech-packages.yml
+- type: Plans
+  url: plans/tessa-tech-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/tessa-tech-rate-limits.yml
+- type: ChangeLog
+  url: changelog/tessa-tech-changelog.yml
+- type: ChangeLog
+  name: Extension changelog (provider-hosted)
+  url: https://complianceregistry.net/extensions/tessa-professional-services/v1/changelog
+- type: GlobalPrivacyControl
+  url: https://tessa.tech/privacy-policy/
+- type: DataSubjectRequest
+  url: https://tessa.tech/privacy-policy/
+image: https://tessa.tech/wp-content/uploads/2026/08/tessa-og-default-1200x630-1.png
+x-enrichment:
+  date: '2026-09-19'
+  status: enriched
+  artifacts_added: 33
+  pass: local-v3
