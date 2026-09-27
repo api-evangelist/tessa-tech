@@ -27,54 +27,39 @@ tags:
 - Agent Directory
 - A2A
 - MCP
+- Agent-Native
+- Company
+tags_raw:
+- Digital Marketing
+- SEO
+- Web Development
+- Accessibility
+- AI Agent Readiness
+- Professional Services
+- Agent Directory
+- A2A
+- MCP
 - agent-native
 - Company
 apis:
-- name: TESSA Agent Directory API
-  description: 'FastAPI service behind aiagent.tessa.tech: the A2A agent card and JSON-RPC endpoint, per-service
-    and per-tenant agent cards, the professional-services directory (firm cards and profiles, introduction requests,
-    claim / verify / removal / takedown flows), the TESSA Professional Services A2A extension and service-type taxonomies,
-    and an admin/vector surface. 51 operations, OpenAPI 3.1.0, no securitySchemes declared (admin routes answer
-    401 on a token the spec does not describe). The same application serves complianceregistry.net and marketingregistry.org;
-    registry-scoped routes return 421 on aiagent.tessa.tech.'
-  humanURL: https://aiagent.tessa.tech/docs
-  baseURL: https://aiagent.tessa.tech
-  tags:
-  - Agent Directory
-  - Professional Services
-  - A2A
-  - Accessibility
-  - Digital Marketing
-  properties:
-  - type: OpenAPI
-    url: openapi/tessa-tech-agent-directory-openapi.yml
-  - type: OpenAPI
-    name: OpenAPI (provider-hosted)
-    url: https://aiagent.tessa.tech/openapi.json
-  - type: Documentation
-    url: https://aiagent.tessa.tech/docs
-  - type: APIReference
-    url: https://aiagent.tessa.tech/redoc
-  - type: Authentication
-    url: authentication/tessa-tech-authentication.yml
-  - type: Conventions
-    url: conventions/tessa-tech-conventions.yml
-  - type: ErrorCatalog
-    url: errors/tessa-tech-problem-types.yml
-  - type: DataModel
-    url: data-model/tessa-tech-data-model.yml
-  - type: Overlay
-    url: overlays/tessa-tech-agent-directory-overlay.yaml
 - name: TESSA MCP Server
-  description: 'Hosted, anonymous MCP server (Streamable HTTP at https://aiagent.tessa.tech/mcp/, serverInfo tessa-mcp-server
-    1.30.0, protocolVersion 2025-06-18) exposing ten tools: TESSA''s service catalog, case studies and WCAG audit
-    offering, an AI Agent Readiness assessment for any URL, professional-services directory search and firm profiles,
-    and four lead-creating tools (strategy-session booking, introduction, quote, listing claim). Advertised by /.well-known/mcp/server.json
-    and the did:web document. A second MCP server on the WordPress apex (https://tessa.tech/wp-json/mcp/mcp-oauth-server)
-    is OAuth 2.1-gated with RFC 8414/9728 discovery published on tessa.tech.'
+  description: >-
+    Hosted, anonymous MCP server (Streamable HTTP at https://aiagent.tessa.tech/mcp/, serverInfo tessa-mcp-server
+    1.30.0, protocolVersion 2025-06-18) exposing ten tools: TESSA's service catalog, case studies and
+    WCAG audit offering, an AI Agent Readiness assessment for any URL, professional-services directory
+    search and firm profiles, and four lead-creating tools (strategy-session booking, introduction, quote,
+    listing claim). Advertised by /.well-known/mcp/server.json and the did:web document. A second MCP
+    server on the WordPress apex (https://tessa.tech/wp-json/mcp/mcp-oauth-server) is OAuth 2.1-gated
+    with RFC 8414/9728 discovery published on tessa.tech.
   humanURL: https://aiagent.tessa.tech/
   baseURL: https://aiagent.tessa.tech/mcp/
   tags:
+  - MCP
+  - Agent-Native
+  - Professional Services
+  - AI Agent Readiness
+  - Digital Marketing
+  tags_raw:
   - MCP
   - agent-native
   - Professional Services
@@ -95,14 +80,21 @@ apis:
   - type: Authentication
     url: authentication/tessa-tech-authentication.yml
 - name: TESSA A2A Agent
-  description: A2A agent (protocolVersion 0.3.0, JSONRPC) for TESSA Marketing & Technology with nine skills — services
-    catalog, case studies, AI agent readiness assessment, professional-services firm search, WCAG audit offering,
-    strategy-session booking, introduction, listing claim and quote requests — plus a fleet of 28 per-service agent
-    cards under /s/{slug}/agent-card.json and per-tenant cards under /t/{slug}/. Card graded conformant against
-    A2A 1.0.0 hard checks; no securitySchemes declared.
+  description: >-
+    A2A agent (protocolVersion 0.3.0, JSONRPC) for TESSA Marketing & Technology with nine skills — services
+    catalog, case studies, AI agent readiness assessment, professional-services firm search, WCAG audit
+    offering, strategy-session booking, introduction, listing claim and quote requests — plus a fleet
+    of 28 per-service agent cards under /s/{slug}/agent-card.json and per-tenant cards under /t/{slug}/.
+    Card graded conformant against A2A 1.0.0 hard checks; no securitySchemes declared.
   humanURL: https://aiagent.tessa.tech/.well-known/agent-card.json
   baseURL: https://aiagent.tessa.tech/a2a
   tags:
+  - A2A
+  - Agent-Native
+  - Professional Services
+  - Digital Marketing
+  - Agent Directory
+  tags_raw:
   - A2A
   - agent-native
   - Professional Services
@@ -116,6 +108,541 @@ apis:
     url: https://aiagent.tessa.tech/.well-known/agent-card.json
   - type: Documentation
     url: https://aiagent.tessa.tech/
+- aid: tessa-tech:tessa-tech-a2a-api
+  name: TESSA Marketing & Technology A2a API
+  description: The A2a API from TESSA Marketing & Technology — 1 operation(s) for a2a.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - A2a
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-a2a-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-admin-api
+  name: TESSA Marketing & Technology Admin API
+  description: The Admin API from TESSA Marketing & Technology — 2 operation(s) for admin.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Admin
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-admin-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-agent-card-json-api
+  name: TESSA Marketing & Technology Agent Card.json API
+  description: >-
+    The Agent Card.json API from TESSA Marketing & Technology — 1 operation(s) for agent card.json.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Agent Card.json
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-agent-card-json-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-chatgpt-api
+  name: TESSA Marketing & Technology Chatgpt API
+  description: The Chatgpt API from TESSA Marketing & Technology — 1 operation(s) for chatgpt.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Chatgpt
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-chatgpt-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-claim-api
+  name: TESSA Marketing & Technology Claim API
+  description: The Claim API from TESSA Marketing & Technology — 1 operation(s) for claim.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Claim
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-claim-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-claude-api
+  name: TESSA Marketing & Technology Claude API
+  description: The Claude API from TESSA Marketing & Technology — 1 operation(s) for claude.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Claude
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-claude-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-extensions-api
+  name: TESSA Marketing & Technology Extensions API
+  description: The Extensions API from TESSA Marketing & Technology — 6 operation(s) for extensions.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Extensions
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-extensions-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-gemini-api
+  name: TESSA Marketing & Technology Gemini API
+  description: The Gemini API from TESSA Marketing & Technology — 1 operation(s) for gemini.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Gemini
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-gemini-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-healthz-api
+  name: TESSA Marketing & Technology Healthz API
+  description: The Healthz API from TESSA Marketing & Technology — 1 operation(s) for healthz.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Healthz
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-healthz-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-internal-api
+  name: TESSA Marketing & Technology Internal API
+  description: The Internal API from TESSA Marketing & Technology — 2 operation(s) for internal.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Internal
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-internal-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-profile-json-api
+  name: TESSA Marketing & Technology Profile.json API
+  description: >-
+    The Profile.json API from TESSA Marketing & Technology — 1 operation(s) for profile.json.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Profile.json
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-profile-json-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-registry-api
+  name: TESSA Marketing & Technology Registry API
+  description: The Registry API from TESSA Marketing & Technology — 1 operation(s) for registry.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Registry
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-registry-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-registry-json-api
+  name: TESSA Marketing & Technology Registry.json API
+  description: >-
+    The Registry.json API from TESSA Marketing & Technology — 1 operation(s) for registry.json.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Registry.json
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-registry-json-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-request-introduction-api
+  name: TESSA Marketing & Technology Request Introduction API
+  description: >-
+    The Request Introduction API from TESSA Marketing & Technology — 1 operation(s) for request introduction.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Request Introduction
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-request-introduction-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-request-removal-api
+  name: TESSA Marketing & Technology Request Removal API
+  description: >-
+    The Request Removal API from TESSA Marketing & Technology — 2 operation(s) for request removal.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Request Removal
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-request-removal-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-robots-txt-api
+  name: TESSA Marketing & Technology Robots.txt API
+  description: The Robots.txt API from TESSA Marketing & Technology — 1 operation(s) for robots.txt.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Robots.txt
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-robots-txt-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-s-api
+  name: TESSA Marketing & Technology S API
+  description: The S API from TESSA Marketing & Technology — 2 operation(s) for s.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - S
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-s-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-t-api
+  name: TESSA Marketing & Technology T API
+  description: The T API from TESSA Marketing & Technology — 4 operation(s) for t.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - T
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-t-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-takedown-api
+  name: TESSA Marketing & Technology Takedown API
+  description: The Takedown API from TESSA Marketing & Technology — 1 operation(s) for takedown.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Takedown
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-takedown-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-taxonomy-api
+  name: TESSA Marketing & Technology Taxonomy API
+  description: The Taxonomy API from TESSA Marketing & Technology — 5 operation(s) for taxonomy.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Taxonomy
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-taxonomy-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-tessa-agent-directory-api
+  name: TESSA Marketing & Technology TESSA Agent Directory API
+  description: >-
+    The TESSA Agent Directory API from TESSA Marketing & Technology — 2 operation(s) for tessa agent directory.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - TESSA Agent Directory
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-tessa-agent-directory-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-vectors-api
+  name: TESSA Marketing & Technology Vectors API
+  description: The Vectors API from TESSA Marketing & Technology — 5 operation(s) for vectors.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Vectors
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-vectors-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-verify-listing-api
+  name: TESSA Marketing & Technology Verify Listing API
+  description: >-
+    The Verify Listing API from TESSA Marketing & Technology — 2 operation(s) for verify listing.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - Verify Listing
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-verify-listing-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
+- aid: tessa-tech:tessa-tech-well-known-api
+  name: TESSA Marketing & Technology .well Known API
+  description: The .well Known API from TESSA Marketing & Technology — 3 operation(s) for .well known.
+  humanURL: https://aiagent.tessa.tech/docs
+  baseURL: https://aiagent.tessa.tech
+  tags:
+  - .well Known
+  properties:
+  - type: OpenAPI
+    url: openapi/tessa-tech-well-known-api-openapi.yml
+  - type: Documentation
+    url: https://aiagent.tessa.tech/docs
+  - type: APIReference
+    url: https://aiagent.tessa.tech/redoc
+  - type: Authentication
+    url: authentication/tessa-tech-authentication.yml
+  - type: Conventions
+    url: conventions/tessa-tech-conventions.yml
+  - type: ErrorCatalog
+    url: errors/tessa-tech-problem-types.yml
+  - type: DataModel
+    url: data-model/tessa-tech-data-model.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -200,3 +727,10 @@ x-enrichment:
   status: enriched
   artifacts_added: 33
   pass: local-v3
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://aiagent.tessa.tech/.well-known/agent-card.json"
+  grade: "conformant"
+  protocol_version: "0.3.0"
+  control: 404

@@ -1,0 +1,137 @@
+openapi: 3.2.0
+info:
+  title: Tessa Tech Request Removal API
+  version: 0.1.0
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Request Removal across 2 of this provider''s published API definitions: tessa-tech-openapi.json, tessa-tech-agent-directory-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://aiagent.tessa.tech
+  description: TESSA's own agent host — agent card, A2A JSON-RPC, MCP (/mcp/), service cards (/s), OpenAPI. Registry-scoped routes return 421 here.
+- url: https://complianceregistry.net
+  description: TESSA-operated Compliance Registry (same application, same spec bytes). Registry routes (/registry.json, /taxonomy, /extensions, /{slug}) resolve here.
+- url: https://marketingregistry.org
+  description: TESSA-operated Local Business / Marketing Registry (same application, same spec bytes).
+tags:
+- name: Request Removal
+paths:
+  /request-removal:
+    get:
+      summary: Removal Form
+      operationId: removal_form_request_removal_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+      tags:
+      - Request Removal
+    post:
+      summary: Removal Submit
+      operationId: removal_submit_request_removal_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_removal_submit_request_removal_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Request Removal
+  /request-removal/verify/{token}:
+    get:
+      summary: Removal Verify
+      operationId: removal_verify_request_removal_verify__token__get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Request Removal
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Body_removal_submit_request_removal_post:
+      properties:
+        firm_slug:
+          type: string
+          title: Firm Slug
+        requester_email:
+          type: string
+          title: Requester Email
+        requester_reason:
+          type: string
+          title: Requester Reason
+          default: ''
+      type: object
+      required:
+      - firm_slug
+      - requester_email
+      title: Body_removal_submit_request_removal_post
+x-refined-from:
+- tessa-tech-openapi.json
+- tessa-tech-agent-directory-openapi.yml

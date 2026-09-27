@@ -1,0 +1,49 @@
+openapi: 3.2.0
+info:
+  title: Tessa Tech Internal API
+  version: 0.1.0
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Internal across 2 of this provider''s published API definitions: tessa-tech-openapi.json, tessa-tech-agent-directory-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://aiagent.tessa.tech
+  description: TESSA's own agent host — agent card, A2A JSON-RPC, MCP (/mcp/), service cards (/s), OpenAPI. Registry-scoped routes return 421 here.
+- url: https://complianceregistry.net
+  description: TESSA-operated Compliance Registry (same application, same spec bytes). Registry routes (/registry.json, /taxonomy, /extensions, /{slug}) resolve here.
+- url: https://marketingregistry.org
+  description: TESSA-operated Local Business / Marketing Registry (same application, same spec bytes).
+tags:
+- name: Internal
+paths:
+  /internal/visibility:
+    get:
+      summary: Internal Visibility
+      description: 'HTML dashboard of registration status across upstream A2A registries
+
+        and MCP catalogs. Source-of-truth: data/registrations.json (committed).'
+      operationId: internal_visibility_internal_visibility_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+      tags:
+      - Internal
+  /internal/visibility.json:
+    get:
+      summary: Internal Visibility Json
+      description: JSON variant of /internal/visibility for the cron health-check script.
+      operationId: internal_visibility_json_internal_visibility_json_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - Internal
+x-refined-from:
+- tessa-tech-openapi.json
+- tessa-tech-agent-directory-openapi.yml

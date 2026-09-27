@@ -1,0 +1,103 @@
+openapi: 3.2.0
+info:
+  title: Tessa Tech Admin API
+  version: 0.1.0
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Admin across 2 of this provider''s published API definitions: tessa-tech-openapi.json, tessa-tech-agent-directory-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://aiagent.tessa.tech
+  description: TESSA's own agent host — agent card, A2A JSON-RPC, MCP (/mcp/), service cards (/s), OpenAPI. Registry-scoped routes return 421 here.
+- url: https://complianceregistry.net
+  description: TESSA-operated Compliance Registry (same application, same spec bytes). Registry routes (/registry.json, /taxonomy, /extensions, /{slug}) resolve here.
+- url: https://marketingregistry.org
+  description: TESSA-operated Local Business / Marketing Registry (same application, same spec bytes).
+tags:
+- name: Admin
+paths:
+  /admin/requests:
+    get:
+      summary: Admin Requests
+      operationId: admin_requests_admin_requests_get
+      parameters:
+      - name: days
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 7
+          title: Days
+      - name: firm
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Firm
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Admin
+  /admin/first-hit:
+    get:
+      summary: Admin First Hit
+      operationId: admin_first_hit_admin_first_hit_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      tags:
+      - Admin
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- tessa-tech-openapi.json
+- tessa-tech-agent-directory-openapi.yml

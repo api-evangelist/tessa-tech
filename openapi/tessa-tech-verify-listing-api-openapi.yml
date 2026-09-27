@@ -1,0 +1,149 @@
+openapi: 3.2.0
+info:
+  title: Tessa Tech Verify Listing API
+  version: 0.1.0
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Verify Listing across 2 of this provider''s published API definitions: tessa-tech-openapi.json, tessa-tech-agent-directory-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://aiagent.tessa.tech
+  description: TESSA's own agent host — agent card, A2A JSON-RPC, MCP (/mcp/), service cards (/s), OpenAPI. Registry-scoped routes return 421 here.
+- url: https://complianceregistry.net
+  description: TESSA-operated Compliance Registry (same application, same spec bytes). Registry routes (/registry.json, /taxonomy, /extensions, /{slug}) resolve here.
+- url: https://marketingregistry.org
+  description: TESSA-operated Local Business / Marketing Registry (same application, same spec bytes).
+tags:
+- name: Verify Listing
+paths:
+  /verify-listing:
+    get:
+      summary: Verify Form
+      operationId: verify_form_verify_listing_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+      tags:
+      - Verify Listing
+    post:
+      summary: Verify Submit
+      operationId: verify_submit_verify_listing_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_verify_submit_verify_listing_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Verify Listing
+  /verify-listing/confirm/{token}:
+    get:
+      summary: Verify Confirm
+      operationId: verify_confirm_verify_listing_confirm__token__get
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Verify Listing
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Body_verify_submit_verify_listing_post:
+      properties:
+        firm_name:
+          type: string
+          title: Firm Name
+        contact_name:
+          type: string
+          title: Contact Name
+        contact_email:
+          type: string
+          title: Contact Email
+        contact_role:
+          type: string
+          title: Contact Role
+          default: ''
+        contact_phone:
+          type: string
+          title: Contact Phone
+          default: ''
+        message:
+          type: string
+          title: Message
+          default: ''
+      type: object
+      required:
+      - firm_name
+      - contact_name
+      - contact_email
+      title: Body_verify_submit_verify_listing_post
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- tessa-tech-openapi.json
+- tessa-tech-agent-directory-openapi.yml

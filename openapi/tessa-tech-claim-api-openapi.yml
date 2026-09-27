@@ -1,0 +1,84 @@
+openapi: 3.2.0
+info:
+  title: Tessa Tech Claim API
+  version: 0.1.0
+  x-refined-note:
+  - x-apievangelist-provenance differs across the merged source definitions and was not carried
+  description: 'Operations tagged Claim across 2 of this provider''s published API definitions: tessa-tech-openapi.json, tessa-tech-agent-directory-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://aiagent.tessa.tech
+  description: TESSA's own agent host — agent card, A2A JSON-RPC, MCP (/mcp/), service cards (/s), OpenAPI. Registry-scoped routes return 421 here.
+- url: https://complianceregistry.net
+  description: TESSA-operated Compliance Registry (same application, same spec bytes). Registry routes (/registry.json, /taxonomy, /extensions, /{slug}) resolve here.
+- url: https://marketingregistry.org
+  description: TESSA-operated Local Business / Marketing Registry (same application, same spec bytes).
+tags:
+- name: Claim
+paths:
+  /{slug}/claim:
+    get:
+      summary: Firm Claim Stub
+      description: v1 placeholder — claim flow is v2. Shows a 'contact us' page.
+      operationId: firm_claim_stub__slug__claim_get
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Slug
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+      - Claim
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+x-refined-from:
+- tessa-tech-openapi.json
+- tessa-tech-agent-directory-openapi.yml
