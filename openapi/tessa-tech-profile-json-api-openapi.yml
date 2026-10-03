@@ -1,10 +1,22 @@
 openapi: 3.2.0
 info:
-  title: Tessa Tech Profile.json API
+  title: TESSA Agent Directory Profile.json API
   version: 0.1.0
-  x-refined-note:
-  - x-apievangelist-provenance differs across the merged source definitions and was not carried
-  description: 'Operations tagged Profile.json across 2 of this provider''s published API definitions: tessa-tech-openapi.json, tessa-tech-agent-directory-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'TESSA Marketing & Technology''s FastAPI service behind aiagent.tessa.tech: the A2A agent card and JSON-RPC endpoint, per-service and per-tenant agent cards, the professional-services directory (firm cards, profiles, introduction requests, claim/verify/removal/takedown flows), the TESSA Professional Services A2A extension, service-type taxonomies, an admin/vector surface, and the mount point of the MCP server (/mcp, Streamable HTTP).'
+  contact:
+    name: TESSA Marketing & Technology
+    url: https://tessa.tech
+    email: sales@tessa.tech
+  x-apievangelist-provenance:
+    harvested: '2026-09-19'
+    method: searched
+    source: https://aiagent.tessa.tech/openapi.json
+    original: openapi/_original/tessa-tech-openapi.json
+    original_sha256: 3349c7e2613aca4fb5736b570f082a2d509e1147b8a82183b71dafff0722f6da
+    changes:
+    - servers[] added (the harvested spec declares none); hosts taken from the provider's own root document at https://aiagent.tessa.tech/ and verified by an identical-byte spec at complianceregistry.net/openapi.json and marketingregistry.org/openapi.json
+    - info.description and info.contact added; contact values from the agent card (_meta.tessa.contact) and server.json (support_email)
+    ownership: Served on tessa.tech's own subdomain; info.title names TESSA; the agent card at the same host names TESSA Marketing & Technology as provider with url https://tessa.tech; the root document names the app 'TESSA MCP Server + Agent Directory'.
 servers:
 - url: https://aiagent.tessa.tech
   description: TESSA's own agent host — agent card, A2A JSON-RPC, MCP (/mcp/), service cards (/s), OpenAPI. Registry-scoped routes return 421 here.
@@ -43,15 +55,6 @@ paths:
       - Profile.json
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -78,6 +81,12 @@ components:
       - msg
       - type
       title: ValidationError
-x-refined-from:
-- tessa-tech-openapi.json
-- tessa-tech-agent-directory-openapi.yml
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
