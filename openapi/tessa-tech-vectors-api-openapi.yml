@@ -168,6 +168,32 @@ paths:
       - Vectors
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UpsertRequest:
+      properties:
+        collection:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Collection
+        points:
+          items:
+            $ref: '#/components/schemas/Point'
+          type: array
+          title: Points
+      type: object
+      required:
+      - collection
+      - points
+      title: UpsertRequest
     SearchRequest:
       properties:
         collection:
@@ -208,40 +234,6 @@ components:
       - collection
       - vector
       title: SearchRequest
-    DeleteRequest:
-      properties:
-        collection:
-          type: string
-          maxLength: 64
-          minLength: 1
-          title: Collection
-        filter:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Filter
-      type: object
-      required:
-      - collection
-      title: DeleteRequest
-    UpsertRequest:
-      properties:
-        collection:
-          type: string
-          maxLength: 64
-          minLength: 1
-          title: Collection
-        points:
-          items:
-            $ref: '#/components/schemas/Point'
-          type: array
-          title: Points
-      type: object
-      required:
-      - collection
-      - points
-      title: UpsertRequest
     Point:
       properties:
         id:
@@ -264,6 +256,23 @@ components:
       - id
       - vector
       title: Point
+    DeleteRequest:
+      properties:
+        collection:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Collection
+        filter:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Filter
+      type: object
+      required:
+      - collection
+      title: DeleteRequest
     ValidationError:
       properties:
         loc:
@@ -290,12 +299,3 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
