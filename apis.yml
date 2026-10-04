@@ -114,6 +114,8 @@ apis:
   humanURL: https://aiagent.tessa.tech/docs
   baseURL: https://aiagent.tessa.tech
   tags:
+  - A2A
+  tags_raw:
   - A2a
   properties:
   - type: OpenAPI
@@ -181,6 +183,8 @@ apis:
   humanURL: https://aiagent.tessa.tech/docs
   baseURL: https://aiagent.tessa.tech
   tags:
+  - ChatGPT
+  tags_raw:
   - Chatgpt
   properties:
   - type: OpenAPI

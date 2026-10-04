@@ -1,0 +1,28 @@
+{
+  "repo": "tessa-tech",
+  "feeds": [
+    {
+      "source": "https://tessa.tech/blog/",
+      "feed_url": "https://tessa.tech/blog/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "discovered"
+    },
+    {
+      "source": "https://tessa.tech/",
+      "feed_url": "https://tessa.tech/blog/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "discovered"
+    },
+    {
+      "source": "https://tessa.tech/blog/feed/",
+      "feed_url": "https://tessa.tech/blog/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    }
+  ],
+  "post_count": 10,
+  "fetched": "2026-10-03T12:30:02Z"
+}
