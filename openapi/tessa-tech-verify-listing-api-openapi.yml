@@ -92,35 +92,6 @@ paths:
       - Verify Listing
 components:
   schemas:
-    Body_verify_submit_verify_listing_post:
-      properties:
-        firm_name:
-          type: string
-          title: Firm Name
-        contact_name:
-          type: string
-          title: Contact Name
-        contact_email:
-          type: string
-          title: Contact Email
-        contact_role:
-          type: string
-          title: Contact Role
-          default: ''
-        contact_phone:
-          type: string
-          title: Contact Phone
-          default: ''
-        message:
-          type: string
-          title: Message
-          default: ''
-      type: object
-      required:
-      - firm_name
-      - contact_name
-      - contact_email
-      title: Body_verify_submit_verify_listing_post
     ValidationError:
       properties:
         loc:
@@ -156,3 +127,32 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    Body_verify_submit_verify_listing_post:
+      properties:
+        firm_name:
+          type: string
+          title: Firm Name
+        contact_name:
+          type: string
+          title: Contact Name
+        contact_email:
+          type: string
+          title: Contact Email
+        contact_role:
+          type: string
+          title: Contact Role
+          default: ''
+        contact_phone:
+          type: string
+          title: Contact Phone
+          default: ''
+        message:
+          type: string
+          title: Message
+          default: ''
+      type: object
+      required:
+      - firm_name
+      - contact_name
+      - contact_email
+      title: Body_verify_submit_verify_listing_post

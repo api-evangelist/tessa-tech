@@ -168,15 +168,6 @@ paths:
       - Vectors
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     UpsertRequest:
       properties:
         collection:
@@ -194,6 +185,32 @@ components:
       - collection
       - points
       title: UpsertRequest
+    DeleteRequest:
+      properties:
+        collection:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Collection
+        filter:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Filter
+      type: object
+      required:
+      - collection
+      title: DeleteRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     SearchRequest:
       properties:
         collection:
@@ -256,23 +273,6 @@ components:
       - id
       - vector
       title: Point
-    DeleteRequest:
-      properties:
-        collection:
-          type: string
-          maxLength: 64
-          minLength: 1
-          title: Collection
-        filter:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Filter
-      type: object
-      required:
-      - collection
-      title: DeleteRequest
     ValidationError:
       properties:
         loc:
