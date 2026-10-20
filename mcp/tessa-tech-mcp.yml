@@ -71,15 +71,15 @@ auth:
   note: Anonymous. No WWW-Authenticate challenge, no RFC 9728 protected-resource metadata on aiagent.tessa.tech
     (/.well-known/oauth-protected-resource 404). The four lead-creating tools rely on the caller-supplied
     prospect_email as the only identity signal.
-tool_count: 10
+tool_count: 14
 tools:
 - name: get_services
+  description: "List the services TESSA Marketing & Technology offers: SEO, paid ads,\n        website\
+    \ design and development, AI chatbots and avatars, AI agent\n        readiness, and web accessibility.\
+    \ Use this when someone asks what TESSA\n        does. For current prices call get_pricing.\n\n  \
+    \      Optional filters:\n            category_slug: marketing | web-development | ai-experiences\
+    \ | accessibility\n            service_slug:  one service, for example 'seo'"
   category: catalog
-  description: 'Returns TESSA''s full service catalog (SEO, paid media, web/app development, AI agent
-    readiness, accessibility, and more). Each service includes its live per-service A2A card URL (`agent_card`)
-    and JSON-RPC endpoint (`a2a_endpoint`), so you can discover a service here and then talk to its dedicated
-    A2A agent. Optional filters: category_slug: marketing | web-development | ai-experiences service_slug:
-    filter to one specific service'
   input_schema:
     required: []
     properties:
@@ -95,10 +95,19 @@ tools:
         default: null
   side_effects: none (read-only)
   a2a_skill: tessa-services
+- name: get_pricing
+  description: "TESSA's current starting prices for every service, read live from\n        https://tessa.tech/pricing/\
+    \ (for example SEO, PPC, websites, AI avatars,\n        accessibility). Use this when someone asks\
+    \ what TESSA charges or wants\n        to compare prices.\n\n        service: optional keyword to\
+    \ filter, for example 'seo' or 'website'"
+- name: get_contact_info
+  description: "TESSA's phone number, email, office address, business hours, and the\n        links to\
+    \ book a call. Use this when someone wants to reach TESSA."
 - name: get_case_studies
+  description: "TESSA's client results (case studies), for example traffic and lead\n        growth for\
+    \ named clients.\n\n        Optional filters:\n            industry:     industry keyword (case-insensitive)\n\
+    \            service_slug: only studies that used this service"
   category: catalog
-  description: 'Returns TESSA''s portfolio of project results. Optional filters: industry: industry name
-    keyword (case-insensitive contains) service_slug: filter to studies that used a given service'
   input_schema:
     required: []
     properties:
@@ -114,11 +123,51 @@ tools:
         default: null
   side_effects: none (read-only)
   a2a_skill: tessa-case-studies
+- name: get_seo_offer
+  description: "TESSA's SEO offer in structured form: what it is, starting prices\n        word for word\
+    \ from the pricing page (local, national and international\n        SEO, Generative Engine Optimization),\
+    \ the service page, and the link to\n        book a free strategy session for the scope and an exact\
+    \ price. Scope,\n        deliverables and timeline are included where TESSA has published them.\n\
+    \        Use this when someone asks about TESSA's SEO, local SEO, national SEO or\n        Generative\
+    \ Engine Optimization (GEO)."
+- name: get_advertising_offer
+  description: "TESSA's online advertising offer (search engine marketing, PPC and\n        paid social)\
+    \ in structured form: what it is, starting management fees\n        word for word from the pricing\
+    \ page (PPC, social media ads, display and\n        retargeting, Google Ad Grant management), the\
+    \ service page, and the link\n        to book a free strategy session for the scope and an exact price.\
+    \ Scope,\n        deliverables and timeline are included where TESSA has published them.\n       \
+    \ Use this when someone asks about TESSA's Google Ads, PPC, SEM, social\n        media ads, display\
+    \ and retargeting, or Google Ad Grants management."
+- name: get_web_ai_development_offer
+  description: "TESSA's website and AI development offer in structured form: what it\n        is, starting\
+    \ prices word for word from the pricing page (website design,\n        website development), the service\
+    \ page, and the link to book a free\n        strategy session for the scope and an exact price. Scope,\
+    \ deliverables\n        and timeline are included where TESSA has published them. Use this when\n\
+    \        someone wants TESSA to design or build a website, a web application or\n        AI software."
+- name: get_wcag_audit
+  description: "Details of TESSA's WCAG 2.2 AA accessibility audit: scope,\n        deliverables, timeline\
+    \ and price range."
+  category: catalog
+  input_schema:
+    required: []
+    properties: {}
+  side_effects: none (read-only)
+  a2a_skill: get-wcag-audit
 - name: assess_ai_readiness
+  description: "Quick automated check of how ready a website is for AI assistants and\n        agents:\
+    \ 12 of the 46 items in TESSA's AI Readiness audit, checked on the\n        homepage and a few standard\
+    \ files in about 15 seconds. Not the full audit.\n\n        Items (by audit number): 4 robots.txt\
+    \ allows AI crawlers, 5 the firewall\n        serves the homepage to real AI crawler user agents (OAI-SearchBot,\n\
+    \        PerplexityBot, Claude-User) the same as to a browser, 6 content readable\n        without\
+    \ JavaScript, 7 XML sitemap, 8 llms.txt, 9 /pricing.md,\n        10 Organization or LocalBusiness\
+    \ schema, 16 one H1, 18 phone, address and\n        hours as plain text, 32 schema potentialAction,\
+    \ 41 A2A agent card,\n        43 MCP server card.\n\n        Returns each item's status (pass, partial,\
+    \ fail or could_not_check) with\n        evidence and a plain-English fix, a 0 to 100 overall_score\
+    \ over the items\n        that could be checked (could_not_check never counts as a fail), what the\n\
+    \        full audit adds, and TESSA's contact details. The full audit covers all 46\n        items\
+    \ across the site plus a live ChatGPT, Claude, Perplexity and Gemini\n        citation test; book\
+    \ it with request_strategy_session.\n\n        url: the website to check, for example https://example.com"
   category: assessment
-  description: Given a website URL, returns a 0-100 AI Agent Readiness score with category breakdowns
-    (structured data, metadata quality, agent discoverability, AI-bot friendliness) and concrete recommendations.
-    Pure deterministic check, fast, no LLM call.
   input_schema:
     required:
     - url
@@ -127,67 +176,45 @@ tools:
         type: string
   side_effects: none (read-only)
   a2a_skill: ai-readiness-assessment
-- name: find_professional_services_firm
-  category: directory
-  description: 'Search the TESSA Professional Services Directory. industry: segment slug (''marketing''
-    | ''compliance'') or free-text keyword region: city or state name (case-insensitive contains) capability:
-    keyword to match against firm descriptions and service names limit: max results'
-  input_schema:
-    required: []
-    properties:
-      industry:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      region:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      capability:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      limit:
-        default: 20
-        type: integer
-  side_effects: none (read-only)
-  a2a_skill: find-professional-services-firm
-- name: get_firm_profile
-  category: directory
-  description: 'Returns the full dossier for a single firm in the directory: description, headquarters,
-    founded year, employee band, services, locations, and directory meta (publisher, claim URL, takedown
-    URL).'
-  input_schema:
-    required:
-    - slug
-    properties:
-      slug:
-        type: string
-  side_effects: none (read-only)
-  a2a_skill: null
-  note: 'MCP-only: no A2A skill; backed by the REST firm profile route (see the crosswalk).'
-- name: get_wcag_audit
-  category: catalog
-  description: 'Returns the structured offering for TESSA''s WCAG 2.2 AA Accessibility Audit: scope, deliverables,
-    timeline, pricing bands (hourly + engagement range), paired service-type slugs, and the URL of TESSA''s
-    profile in the TESSA Compliance Registry. Use this when a buyer agent needs TESSA''s accessibility
-    audit offering in structured form.'
-  input_schema:
-    required: []
-    properties: {}
-  side_effects: none (read-only)
-  a2a_skill: get-wcag-audit
+- name: assess_seo
+  description: "Free quick SEO check of any website's homepage: indexability (noindex,\n        robots.txt,\
+    \ sitemap), title and meta description, one clear H1,\n        canonical, mobile setup and speed;\
+    \ 0 to 100 score, what passes and\n        fails, how to fix each. Automated, homepage only, not a\
+    \ full SEO audit.\n\n        12 items, about 12 seconds. Each item has a status (pass, partial, fail\n\
+    \        or could_not_check), evidence and a plain-English fix; the score covers\n        only the\
+    \ items that could be checked. For TESSA's SEO service call\n        get_seo_offer; to talk it through,\
+    \ book with request_strategy_session.\n\n        url: the website to check, for example https://example.com"
+- name: assess_ad_tracking
+  description: "Free quick ad tracking check of any website's homepage: GA4, Google Tag\n        Manager,\
+    \ Google Ads, Meta Pixel, Microsoft and LinkedIn tags, call\n        tracking, consent, phone link,\
+    \ form or call to action, and speed; 0 to\n        100 score, what passes and fails, how to fix each.\
+    \ Tags inside Google\n        Tag Manager are looked up in its published container; if it cannot be\n\
+    \        read they are reported as could not check, never as missing.\n        Automated, homepage\
+    \ only, not a full ad account audit.\n\n        11 items, about 12 seconds. Each item has a status\
+    \ (pass, partial, fail\n        or could_not_check), evidence and a plain-English fix; the score covers\n\
+    \        only the items that could be checked. For TESSA's advertising service\n        call get_advertising_offer;\
+    \ to talk it through, book with\n        request_strategy_session.\n\n        url: the website to\
+    \ check, for example https://example.com"
+- name: assess_website
+  description: "Free quick website check of any website's homepage: HTTPS, mobile\n        setup, load\
+    \ time and page weight, platform, security headers, basic\n        accessibility signals, contact\
+    \ form or chat, and an up-to-date footer;\n        0 to 100 score, what passes and fails, how to fix\
+    \ each. Automated,\n        homepage only, not a full website audit.\n\n        12 items (the platform\
+    \ is reported, not scored), about 12 seconds. Each\n        item has a status (pass, partial, fail\
+    \ or could_not_check), evidence and\n        a plain-English fix; the score covers only the items\
+    \ that could be\n        checked. For TESSA's website and AI development service call\n        get_web_ai_development_offer,\
+    \ for a full accessibility audit\n        get_wcag_audit; to talk it through, book with request_strategy_session.\n\
+    \n        url: the website to check, for example https://example.com"
 - name: request_strategy_session
+  description: "Book a free 30-minute strategy session with TESSA (with Kevin Callen,\n        President).\
+    \ Finds an open slot, creates a Google Meet invite and emails\n        it to the prospect. Only call\
+    \ this when the user has asked to book a\n        call and has given their real email address.\n\n\
+    \        prospect_email:   the user's email (required; temporary inboxes are refused)\n        prospect_name:\
+    \    the user's name\n        prospect_org:     the user's company\n        project_brief:    what\
+    \ they want help with\n        requested_window: when they are free, for example '2026-10-06',\n \
+    \                         '2026-10-06T13:00/2026-10-06T17:00', 'tomorrow' or 'next week'\n\n     \
+    \   Up to 10 bookings per email per 7 days; past that it returns status 'duplicate'."
   category: lead
-  description: Book a 30-minute strategy session with TESSA on Kevin Callen's calendar. Finds an open
-    slot in the requested window (or the next 5 business days), creates a Google Calendar event with a
-    Google Meet link, and emails the prospect the invite. If no slot is available, captures the lead and
-    Kevin follows up manually. TESSA-only tool — directory firms use request_introduction instead. requested_window
-    accepts ISO 8601 ranges ('2026-04-30T13:00/2026-04-30T17:00'), single dates ('2026-04-30'), or English
-    ('tomorrow', 'next week').
   input_schema:
     required:
     - prospect_email
@@ -217,115 +244,14 @@ tools:
   side_effects: Creates a Google Calendar event with a Google Meet link on Kevin Callen's calendar and
     emails the prospect; falls back to capturing a lead when no slot is free.
   a2a_skill: request-strategy-session
-- name: request_introduction
-  category: lead
-  description: Request an informational introduction — to TESSA itself, or to any directory firm if you
-    pass target_firm_slug. TESSA logs the lead and either notifies sales@tessa.tech + kevincallen@tessa.tech
-    (TESSA leads) or forwards a warm intro email to the firm with TESSA Cc'd (directory leads). No calendar
-    booking — use request_strategy_session to book a meeting with TESSA.
-  input_schema:
-    required:
-    - prospect_email
-    properties:
-      prospect_email:
-        type: string
-      prospect_name:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      prospect_org:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      project_brief:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      requested_window:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      target_firm_slug:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-  side_effects: Logs a lead; notifies sales@tessa.tech + kevincallen@tessa.tech (TESSA leads) or forwards
-    a warm intro email to the target firm with TESSA Cc'd.
-  a2a_skill: request-introduction
-- name: claim_listing
-  category: directory
-  description: Record a firm's intent to claim its directory listing. Pre-OAuth this does NOT automatically
-    grant control of the listing. TESSA logs the claim and a representative reaches out via email within
-    one business day to verify the claimant and switch the listing's verification status to 'claimed'.
-    The full self-service OAuth-2.1 claim flow lands in a follow-up plan.
-  input_schema:
-    required:
-    - firm_slug
-    - claim_email
-    properties:
-      firm_slug:
-        type: string
-      claim_email:
-        type: string
-      claimant_name:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      claimant_role:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-  side_effects: Logs a claim intent; a representative verifies by email within one business day. Does
-    NOT grant listing control (pre-OAuth stub, per the tool description).
-  a2a_skill: claim-listing
-- name: request_quote
-  category: lead
-  description: 'Request a quote from a directory firm. Lighter-weight than request_introduction — explicitly
-    framed as a budget+scope inquiry. firm_slug: directory slug for the target firm prospect_email: caller''s
-    email for the firm''s reply scope_summary: one-paragraph description of the work budget_band: ''under_5k''
-    | ''5k_25k'' | ''25k_100k'' | ''100k_plus'' | ''open'' — or any free-text dollar figure'
-  input_schema:
-    required:
-    - firm_slug
-    - prospect_email
-    - scope_summary
-    properties:
-      firm_slug:
-        type: string
-      prospect_email:
-        type: string
-      scope_summary:
-        type: string
-      budget_band:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      prospect_name:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      prospect_org:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-      requested_window:
-        anyOf:
-        - type: string
-        - type: 'null'
-        default: null
-  side_effects: Records the request to directory_leads and emails the firm with the prospect's reply-to
-    address.
-  a2a_skill: request-quote
+- name: contact_tessa
+  description: "Send a message to TESSA's sales team, the same as the contact form on\n        tessa.tech.\
+    \ TESSA replies by email within one business day. Use this when\n        the user wants TESSA to contact\
+    \ them but does not want to book a call.\n        Only call it when the user has asked to and has\
+    \ given their real email.\n\n        prospect_email:   the user's email (required; temporary inboxes\
+    \ are refused)\n        prospect_name:    the user's name\n        prospect_org:     the user's company\n\
+    \        project_brief:    the message\n        requested_window: optional, when they would like to\
+    \ hear back"
 resources: []
 prompts: []
 additional_servers:
@@ -401,3 +327,4 @@ tool_quality:
   scored: false
   note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
     from Glimind's agent-readiness audit.
+tools_count: 14
