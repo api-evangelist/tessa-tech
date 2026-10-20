@@ -1,11 +1,22 @@
 {
-  "jsonrpc": "2.0",
-  "id": 1,
+  "endpoint": "https://aiagent.tessa.tech/mcp/",
+  "captured": "2026-10-20",
+  "method": "initialize + tools/list (anonymous, no tool called; roadmap#992)",
+  "protocol_version": "2025-06-18",
+  "server_info": {
+    "name": "tessa-mcp-server",
+    "version": "1.1.0"
+  },
   "result": {
     "tools": [
       {
-        "name": "get_services",
-        "description": "Returns TESSA's full service catalog (SEO, paid media, web/app development,\n        AI agent readiness, accessibility, and more). Each service includes its live\n        per-service A2A card URL (`agent_card`) and JSON-RPC endpoint (`a2a_endpoint`),\n        so you can discover a service here and then talk to its dedicated A2A agent.\n        Optional filters:\n            category_slug: marketing | web-development | ai-experiences\n            service_slug:  filter to one specific service\n        ",
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "description": "List the services TESSA Marketing & Technology offers: SEO, paid ads,\n        website design and development, AI chatbots and avatars, AI agent\n        readiness, and web accessibility. Use this when someone asks what TESSA\n        does. For current prices call get_pricing.\n\n        Optional filters:\n            category_slug: marketing | web-development | ai-experiences | accessibility\n            service_slug:  one service, for example 'seo'\n        ",
         "inputSchema": {
           "properties": {
             "category_slug": {
@@ -33,13 +44,65 @@
               "title": "Service Slug"
             }
           },
-          "title": "get_servicesArguments",
-          "type": "object"
-        }
+          "type": "object",
+          "title": "get_servicesArguments"
+        },
+        "name": "get_services",
+        "title": "TESSA services"
       },
       {
-        "name": "get_case_studies",
-        "description": "Returns TESSA's portfolio of project results.\n\n        Optional filters:\n            industry:     industry name keyword (case-insensitive contains)\n            service_slug: filter to studies that used a given service\n        ",
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "TESSA's current starting prices for every service, read live from\n        https://tessa.tech/pricing/ (for example SEO, PPC, websites, AI avatars,\n        accessibility). Use this when someone asks what TESSA charges or wants\n        to compare prices.\n\n        service: optional keyword to filter, for example 'seo' or 'website'\n        ",
+        "inputSchema": {
+          "properties": {
+            "service": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Service"
+            }
+          },
+          "type": "object",
+          "title": "get_pricingArguments"
+        },
+        "name": "get_pricing",
+        "title": "TESSA pricing"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "TESSA's phone number, email, office address, business hours, and the\n        links to book a call. Use this when someone wants to reach TESSA.\n        ",
+        "inputSchema": {
+          "properties": {},
+          "type": "object",
+          "title": "get_contact_infoArguments"
+        },
+        "name": "get_contact_info",
+        "title": "TESSA contact details"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "description": "TESSA's client results (case studies), for example traffic and lead\n        growth for named clients.\n\n        Optional filters:\n            industry:     industry keyword (case-insensitive)\n            service_slug: only studies that used this service\n        ",
         "inputSchema": {
           "properties": {
             "industry": {
@@ -67,13 +130,84 @@
               "title": "Service Slug"
             }
           },
-          "title": "get_case_studiesArguments",
-          "type": "object"
-        }
+          "type": "object",
+          "title": "get_case_studiesArguments"
+        },
+        "name": "get_case_studies",
+        "title": "TESSA case studies"
       },
       {
-        "name": "assess_ai_readiness",
-        "description": "Given a website URL, returns a 0-100 AI Agent Readiness score with\n        category breakdowns (structured data, metadata quality, agent\n        discoverability, AI-bot friendliness) and concrete recommendations.\n        Pure deterministic check, fast, no LLM call.\n        ",
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "description": "TESSA's SEO offer in structured form: what it is, starting prices\n        word for word from the pricing page (local, national and international\n        SEO, Generative Engine Optimization), the service page, and the link to\n        book a free strategy session for the scope and an exact price. Scope,\n        deliverables and timeline are included where TESSA has published them.\n        Use this when someone asks about TESSA's SEO, local SEO, national SEO or\n        Generative Engine Optimization (GEO).\n        ",
+        "inputSchema": {
+          "properties": {},
+          "type": "object",
+          "title": "get_seo_offerArguments"
+        },
+        "name": "get_seo_offer",
+        "title": "TESSA SEO offer"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "description": "TESSA's online advertising offer (search engine marketing, PPC and\n        paid social) in structured form: what it is, starting management fees\n        word for word from the pricing page (PPC, social media ads, display and\n        retargeting, Google Ad Grant management), the service page, and the link\n        to book a free strategy session for the scope and an exact price. Scope,\n        deliverables and timeline are included where TESSA has published them.\n        Use this when someone asks about TESSA's Google Ads, PPC, SEM, social\n        media ads, display and retargeting, or Google Ad Grants management.\n        ",
+        "inputSchema": {
+          "properties": {},
+          "type": "object",
+          "title": "get_advertising_offerArguments"
+        },
+        "name": "get_advertising_offer",
+        "title": "TESSA online advertising (SEM) offer"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "description": "TESSA's website and AI development offer in structured form: what it\n        is, starting prices word for word from the pricing page (website design,\n        website development), the service page, and the link to book a free\n        strategy session for the scope and an exact price. Scope, deliverables\n        and timeline are included where TESSA has published them. Use this when\n        someone wants TESSA to design or build a website, a web application or\n        AI software.\n        ",
+        "inputSchema": {
+          "properties": {},
+          "type": "object",
+          "title": "get_web_ai_development_offerArguments"
+        },
+        "name": "get_web_ai_development_offer",
+        "title": "TESSA website and AI development offer"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "description": "Details of TESSA's WCAG 2.2 AA accessibility audit: scope,\n        deliverables, timeline and price range.\n        ",
+        "inputSchema": {
+          "properties": {},
+          "type": "object",
+          "title": "get_wcag_auditArguments"
+        },
+        "name": "get_wcag_audit",
+        "title": "TESSA accessibility audit offer"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Quick automated check of how ready a website is for AI assistants and\n        agents: 12 of the 46 items in TESSA's AI Readiness audit, checked on the\n        homepage and a few standard files in about 15 seconds. Not the full audit.\n\n        Items (by audit number): 4 robots.txt allows AI crawlers, 5 the firewall\n        serves the homepage to real AI crawler user agents (OAI-SearchBot,\n        PerplexityBot, Claude-User) the same as to a browser, 6 content readable\n        without JavaScript, 7 XML sitemap, 8 llms.txt, 9 /pricing.md,\n        10 Organization or LocalBusiness schema, 16 one H1, 18 phone, address and\n        hours as plain text, 32 schema potentialAction, 41 A2A agent card,\n        43 MCP server card.\n\n        Returns each item's status (pass, partial, fail or could_not_check) with\n        evidence and a plain-English fix, a 0 to 100 overall_score over the items\n        that could be checked (could_not_check never counts as a fail), what the\n        full audit adds, and TESSA's contact details. The full audit covers all 46\n        items across the site plus a live ChatGPT, Claude, Perplexity and Gemini\n        citation test; book it with request_strategy_session.\n\n        url: the website to check, for example https://example.com\n        ",
         "inputSchema": {
           "properties": {
             "url": {
@@ -84,90 +218,164 @@
           "required": [
             "url"
           ],
-          "title": "assess_ai_readinessArguments",
-          "type": "object"
-        }
+          "type": "object",
+          "title": "assess_ai_readinessArguments"
+        },
+        "name": "assess_ai_readiness",
+        "title": "Quick AI readiness check of a website"
       },
       {
-        "name": "find_professional_services_firm",
-        "description": "Search the TESSA Professional Services Directory.\n\n        industry:   segment slug ('marketing' | 'compliance')\n                    or free-text keyword\n        region:     city or state name (case-insensitive contains)\n        capability: keyword to match against firm descriptions and service names\n        limit:      max results\n        ",
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Free quick SEO check of any website's homepage: indexability (noindex,\n        robots.txt, sitemap), title and meta description, one clear H1,\n        canonical, mobile setup and speed; 0 to 100 score, what passes and\n        fails, how to fix each. Automated, homepage only, not a full SEO audit.\n\n        12 items, about 12 seconds. Each item has a status (pass, partial, fail\n        or could_not_check), evidence and a plain-English fix; the score covers\n        only the items that could be checked. For TESSA's SEO service call\n        get_seo_offer; to talk it through, book with request_strategy_session.\n\n        url: the website to check, for example https://example.com\n        ",
         "inputSchema": {
           "properties": {
-            "industry": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Industry"
-            },
-            "region": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Region"
-            },
-            "capability": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Capability"
-            },
-            "limit": {
-              "default": 20,
-              "title": "Limit",
-              "type": "integer"
-            }
-          },
-          "title": "find_professional_services_firmArguments",
-          "type": "object"
-        }
-      },
-      {
-        "name": "get_firm_profile",
-        "description": "Returns the full dossier for a single firm in the directory:\n        description, headquarters, founded year, employee band, services,\n        locations, and directory meta (publisher, claim URL, takedown URL).\n        ",
-        "inputSchema": {
-          "properties": {
-            "slug": {
-              "title": "Slug",
+            "url": {
+              "title": "Url",
               "type": "string"
             }
           },
           "required": [
-            "slug"
+            "url"
           ],
-          "title": "get_firm_profileArguments",
-          "type": "object"
-        }
+          "type": "object",
+          "title": "assess_seoArguments"
+        },
+        "name": "assess_seo",
+        "title": "Quick SEO check of a website"
       },
       {
-        "name": "get_wcag_audit",
-        "description": "Returns the structured offering for TESSA's WCAG 2.2 AA Accessibility\n        Audit: scope, deliverables, timeline, pricing bands (hourly + engagement\n        range), paired service-type slugs, and the URL of TESSA's profile in the\n        TESSA Compliance Registry. Use this when a buyer agent needs TESSA's\n        accessibility audit offering in structured form.\n        ",
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Free quick ad tracking check of any website's homepage: GA4, Google Tag\n        Manager, Google Ads, Meta Pixel, Microsoft and LinkedIn tags, call\n        tracking, consent, phone link, form or call to action, and speed; 0 to\n        100 score, what passes and fails, how to fix each. Tags inside Google\n        Tag Manager are looked up in its published container; if it cannot be\n        read they are reported as could not check, never as missing.\n        Automated, homepage only, not a full ad account audit.\n\n        11 items, about 12 seconds. Each item has a status (pass, partial, fail\n        or could_not_check), evidence and a plain-English fix; the score covers\n        only the items that could be checked. For TESSA's advertising service\n        call get_advertising_offer; to talk it through, book with\n        request_strategy_session.\n\n        url: the website to check, for example https://example.com\n        ",
         "inputSchema": {
-          "properties": {},
-          "title": "get_wcag_auditArguments",
-          "type": "object"
-        }
+          "properties": {
+            "url": {
+              "title": "Url",
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "type": "object",
+          "title": "assess_ad_trackingArguments"
+        },
+        "name": "assess_ad_tracking",
+        "title": "Quick ad tracking check of a website"
       },
       {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Free quick website check of any website's homepage: HTTPS, mobile\n        setup, load time and page weight, platform, security headers, basic\n        accessibility signals, contact form or chat, and an up-to-date footer;\n        0 to 100 score, what passes and fails, how to fix each. Automated,\n        homepage only, not a full website audit.\n\n        12 items (the platform is reported, not scored), about 12 seconds. Each\n        item has a status (pass, partial, fail or could_not_check), evidence and\n        a plain-English fix; the score covers only the items that could be\n        checked. For TESSA's website and AI development service call\n        get_web_ai_development_offer, for a full accessibility audit\n        get_wcag_audit; to talk it through, book with request_strategy_session.\n\n        url: the website to check, for example https://example.com\n        ",
+        "inputSchema": {
+          "properties": {
+            "url": {
+              "title": "Url",
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "type": "object",
+          "title": "assess_websiteArguments"
+        },
+        "name": "assess_website",
+        "title": "Quick website check"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": true,
+          "readOnlyHint": false
+        },
+        "description": "Book a free 30-minute strategy session with TESSA (with Kevin Callen,\n        President). Finds an open slot, creates a Google Meet invite and emails\n        it to the prospect. Only call this when the user has asked to book a\n        call and has given their real email address.\n\n        prospect_email:   the user's email (required; temporary inboxes are refused)\n        prospect_name:    the user's name\n        prospect_org:     the user's company\n        project_brief:    what they want help with\n        requested_window: when they are free, for example '2026-10-06',\n                          '2026-10-06T13:00/2026-10-06T17:00', 'tomorrow' or 'next week'\n\n        Up to 10 bookings per email per 7 days; past that it returns status 'duplicate'.\n        ",
+        "inputSchema": {
+          "properties": {
+            "prospect_email": {
+              "title": "Prospect Email",
+              "type": "string"
+            },
+            "prospect_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Prospect Name"
+            },
+            "prospect_org": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Prospect Org"
+            },
+            "project_brief": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Project Brief"
+            },
+            "requested_window": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Requested Window"
+            }
+          },
+          "required": [
+            "prospect_email"
+          ],
+          "type": "object",
+          "title": "request_strategy_sessionArguments"
+        },
         "name": "request_strategy_session",
-        "description": "Book a 30-minute strategy session with TESSA on Kevin Callen's\n        calendar. Finds an open slot in the requested window (or the next\n        5 business days), creates a Google Calendar event with a Google Meet\n        link, and emails the prospect the invite. If no slot is available,\n        captures the lead and Kevin follows up manually. TESSA-only tool \u2014\n        directory firms use request_introduction instead.\n\n        requested_window accepts ISO 8601 ranges ('2026-04-30T13:00/2026-04-30T17:00'),\n        single dates ('2026-04-30'), or English ('tomorrow', 'next week').\n        ",
+        "title": "Book a strategy session with TESSA"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": true,
+          "readOnlyHint": false
+        },
+        "description": "Send a message to TESSA's sales team, the same as the contact form on\n        tessa.tech. TESSA replies by email within one business day. Use this when\n        the user wants TESSA to contact them but does not want to book a call.\n        Only call it when the user has asked to and has given their real email.\n\n        prospect_email:   the user's email (required; temporary inboxes are refused)\n        prospect_name:    the user's name\n        prospect_org:     the user's company\n        project_brief:    the message\n        requested_window: optional, when they would like to hear back\n        ",
         "inputSchema": {
           "properties": {
             "prospect_email": {
@@ -226,207 +434,11 @@
           "required": [
             "prospect_email"
           ],
-          "title": "request_strategy_sessionArguments",
-          "type": "object"
-        }
-      },
-      {
-        "name": "request_introduction",
-        "description": "Request an informational introduction \u2014 to TESSA itself, or to any\n        directory firm if you pass target_firm_slug. TESSA logs the lead and\n        either notifies sales@tessa.tech + kevincallen@tessa.tech (TESSA\n        leads) or forwards a warm intro email to the firm with TESSA Cc'd\n        (directory leads). No calendar booking \u2014 use request_strategy_session\n        to book a meeting with TESSA.\n        ",
-        "inputSchema": {
-          "properties": {
-            "prospect_email": {
-              "title": "Prospect Email",
-              "type": "string"
-            },
-            "prospect_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Prospect Name"
-            },
-            "prospect_org": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Prospect Org"
-            },
-            "project_brief": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Project Brief"
-            },
-            "requested_window": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Requested Window"
-            },
-            "target_firm_slug": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Target Firm Slug"
-            }
-          },
-          "required": [
-            "prospect_email"
-          ],
-          "title": "request_introductionArguments",
-          "type": "object"
-        }
-      },
-      {
-        "name": "claim_listing",
-        "description": "Record a firm's intent to claim its directory listing.\n\n        Pre-OAuth this does NOT automatically grant control of the listing.\n        TESSA logs the claim and a representative reaches out via email\n        within one business day to verify the claimant and switch the\n        listing's verification status to 'claimed'. The full self-service\n        OAuth-2.1 claim flow lands in a follow-up plan.\n        ",
-        "inputSchema": {
-          "properties": {
-            "firm_slug": {
-              "title": "Firm Slug",
-              "type": "string"
-            },
-            "claim_email": {
-              "title": "Claim Email",
-              "type": "string"
-            },
-            "claimant_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Claimant Name"
-            },
-            "claimant_role": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Claimant Role"
-            }
-          },
-          "required": [
-            "firm_slug",
-            "claim_email"
-          ],
-          "title": "claim_listingArguments",
-          "type": "object"
-        }
-      },
-      {
-        "name": "request_quote",
-        "description": "Request a quote from a directory firm. Lighter-weight than\n        request_introduction \u2014 explicitly framed as a budget+scope inquiry.\n\n        firm_slug:       directory slug for the target firm\n        prospect_email:  caller's email for the firm's reply\n        scope_summary:   one-paragraph description of the work\n        budget_band:     'under_5k' | '5k_25k' | '25k_100k' | '100k_plus' |\n                         'open' \u2014 or any free-text dollar figure\n        ",
-        "inputSchema": {
-          "properties": {
-            "firm_slug": {
-              "title": "Firm Slug",
-              "type": "string"
-            },
-            "prospect_email": {
-              "title": "Prospect Email",
-              "type": "string"
-            },
-            "scope_summary": {
-              "title": "Scope Summary",
-              "type": "string"
-            },
-            "budget_band": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Budget Band"
-            },
-            "prospect_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Prospect Name"
-            },
-            "prospect_org": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Prospect Org"
-            },
-            "requested_window": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Requested Window"
-            }
-          },
-          "required": [
-            "firm_slug",
-            "prospect_email",
-            "scope_summary"
-          ],
-          "title": "request_quoteArguments",
-          "type": "object"
-        }
+          "type": "object",
+          "title": "contact_tessaArguments"
+        },
+        "name": "contact_tessa",
+        "title": "Send TESSA a message"
       }
     ]
   }
