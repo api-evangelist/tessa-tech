@@ -40,3 +40,9 @@ paths:
                 type: string
       tags:
       - Gemini
+x-provenance:
+  method: harvested
+  publisher: TESSA Marketing & Technology
+  source: https://aiagent.tessa.tech/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
